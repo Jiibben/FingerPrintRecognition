@@ -158,17 +158,33 @@ public class Fingerprint {
     /**
      * Internal method used by {@link #thin(boolean[][])}.
      *
-     * @param image array containing each pixel's boolean value.
-     * @param step  the step to apply, Step 0 or Step 1.
+     * @param image  array containing each pixel's boolean value.
+     * @param //step the step to apply, Step 0 or Step 1.
      * @return A new array containing each pixel's value after the step.
      */
+    static boolean checkAllStep(boolean[][] image, int row, int col) {
+        boolean[] pixelNeighbours = getNeighbours(image, row, col);
+        int pixelBlackNeighbours = blackNeighbours(pixelNeighbours);
+        boolean isPixelBlack = image[row][col];
+        boolean isNeighbourTabNonNull = pixelBlackNeighbours >= 1;
+        boolean IntervalBlackNeigh = pixelBlackNeighbours >= 2 && pixelBlackNeighbours <= 6;
+        boolean white024 = !(pixelNeighbours[0] && pixelNeighbours[2] && pixelNeighbours[3]);
+        boolean white246 = !(pixelNeighbours[2] && pixelNeighbours[4] && pixelNeighbours[6]);
+        if (isPixelBlack && isNeighbourTabNonNull && IntervalBlackNeigh & white024 && white246) {
+            return true;
+        }
+        return false;
+    }
+
     public static boolean[][] thinningStep(boolean[][] image, int step) {
         for (int row = 0; row < image.length; row++) {
             for (int col = 0; col < image.length; col++) {
-
+                if (checkAllStep(image, row, col)) {
+                    image[row][col] = false;
+                }
             }
         }
-
+        return image;
     }
 
     /**
@@ -178,9 +194,24 @@ public class Fingerprint {
      * @return array containing the boolean value of each pixel of the image after
      * applying the thinning algorithm.
      */
+    static boolean[][] copyImage(boolean[][] image) {
+        boolean[][] newImage = new boolean[image.length][image[0].length];
+        for (int row = 0; row < image.length; row++) {
+            for (int col = 0; col < image[0].length; col++) {
+                newImage[row][col] = image[row][col];
+            }
+        }
+        return newImage;
+    }
+
     public static boolean[][] thin(boolean[][] image) {
-        //TODO implement
-        return null;
+        boolean[][] imageNotMod = copyImage(image);
+        thinningStep(image, 0);
+        if (identical(imageNotMod, image)) {
+            return image;
+        } else {
+            return thin(image);
+        }
     }
 
     /**
