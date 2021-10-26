@@ -444,8 +444,7 @@ public class Fingerprint {
      * @return the minutia rotated around the given center.
      */
     public static int[] applyRotation(int[] minutia, int centerRow, int centerCol, int rotation) {
-        //TODO implement
-        return null;
+        for (int)
     }
 
     /**

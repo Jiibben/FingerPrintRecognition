@@ -20,8 +20,9 @@ public class Main {
         //---------------------------
         System.out.println("Uncomment the function calls in Main.main to test your implementation.");
         System.out.println("The provided tests are not complete. You have to write your own tests.");
-        testSlope();
-        testAngle();
+        testExtract();
+        //testSlope();
+        //testAngle();
         // testGetNeighbours();
         // testBlackNeighbours();
         // testTransition();
@@ -68,6 +69,17 @@ public class Main {
      * This function is here to help you test the functionalities of
      * getNeighbours. You are free to modify and/or delete it.
      */
+
+    public static void testExtract() {
+        boolean[][] image = {{true, false, false, true, true},
+                {false, false, true, true, true},
+                {false, true, true, false, true},
+                {false, false, false, false, false}};
+        for (int[] i : Fingerprint.extract(image)) {
+            System.out.println(i[0] + " " + i[1]);
+        }
+    }
+
     public static void testGetNeighbours() {
         System.out.print("testGetNeighbours 1: ");
         boolean[][] image = {{true}};
