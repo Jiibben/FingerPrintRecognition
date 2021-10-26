@@ -20,6 +20,8 @@ public class Main {
         //---------------------------
         System.out.println("Uncomment the function calls in Main.main to test your implementation.");
         System.out.println("The provided tests are not complete. You have to write your own tests.");
+        testSlope();
+        testAngle();
         // testGetNeighbours();
         // testBlackNeighbours();
         // testTransition();
@@ -214,18 +216,19 @@ public class Main {
             printArray(connectedPixels);
         }
     }
+
     public static void testConnectedPixels() {
         System.out.print("testConnectedPixels :=): ");
         boolean[][] image = {{true, false, false, true, true},
-                            {false, false, true, true, true},
-                            {false, true, true, false, true},
-                            {false, false, false, false, false}};
-                        
+                {false, false, true, true, true},
+                {false, true, true, false, true},
+                {false, false, false, false, false}};
+
         boolean[][] expected = {{true, false, false, true, false},
-                                {false, false, true, true, false},
-                                {false, true, true, false, false},
-                                {false, false, false, false, false}};
-                                
+                {false, false, true, true, false},
+                {false, true, true, false, false},
+                {false, false, false, false, false}};
+
         boolean[][] connectedPixels = Fingerprint.connectedPixels(image, 2, 1, 2);
         if (Fingerprint.identical(connectedPixels, expected)) {
             System.out.println("OK");
@@ -237,18 +240,50 @@ public class Main {
             printArray(connectedPixels);
         }
     }
+
+    public static void testSlope() {
+        boolean[][] connectedMachin =
+                {{false, false, false, true, false},
+                        {false, false, true, true, false},
+                        {false, true, true, false, false},
+                        {false, false, false, false, false}};
+        System.out.println("-----------------------------------");
+        System.out.print("testSlope1 :");
+        if (Fingerprint.computeSlope(connectedMachin, 2, 1) == 0.7) {
+            System.out.println("ok");
+        } else {
+            System.out.println(" wrong");
+            System.out.println("got " + Fingerprint.computeSlope(connectedMachin, 2, 1) + " expected " + 0.7);
+            System.out.println("-----------------------------------");
+        }
+        ;
+    }
+
+    public static void testAngle() {
+        boolean[][] connectedMachin =
+                {{false, false, false, true, false},
+                        {false, false, true, true, false},
+                        {false, true, true, false, false},
+                        {false, false, false, false, false}};
+        System.out.println("-----------------------------------");
+        System.out.print("testAngle :");
+        double slope = Fingerprint.computeSlope(connectedMachin, 2, 1);
+        System.out.println(Fingerprint.computeAngle(connectedMachin, 2, 1, slope));
+
+    }
+
     public static void testConnectedPixelsF() {
         System.out.print("testConnectedPixelsF: ");
         boolean[][] image = {{true, false, false, true, true},
-                            {false, false, true, true, false},
-                            {false, true, true, false, false},
-                            {false, false, false, false, false}};
-                        
+                {false, false, true, true, false},
+                {false, true, true, false, false},
+                {false, false, false, false, false}};
+
         boolean[][] expected = {{false, false, false, true, false},
-                                {false, false, true, true, false},
-                                {false, true, true, false, false},
-                                {false, false, false, false, false}};
-                                
+                {false, false, true, true, false},
+                {false, true, true, false, false},
+                {false, false, false, false, false}};
+
         boolean[][] connectedPixels = Fingerprint.connectedPixels(image, 2, 1, 2);
         if (Fingerprint.identical(connectedPixels, expected)) {
             System.out.println("OK");
@@ -260,6 +295,7 @@ public class Main {
             printArray(connectedPixels);
         }
     }
+
     /**
      * This function is here to help you test the functionalities of
      * connectedPixels. You are free to modify and/or delete it.
@@ -301,6 +337,7 @@ public class Main {
                 {true, true, false, false, false},
                 {false, true, false, false, false}};
         boolean[][] connectedPixels = Fingerprint.connectedPixels(image, 2, 1, 2);
+
         if (arrayEqual(connectedPixels, expected)) {
             System.out.println("OK");
         } else {

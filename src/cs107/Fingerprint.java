@@ -131,7 +131,7 @@ public class Fingerprint {
                 acc++;
             }
         }
-        if (!(neighbours[neighbours.length-1]) &&neighbours[0]){
+        if (!(neighbours[neighbours.length - 1]) && neighbours[0]) {
             acc++;
         }
         return acc;
@@ -144,8 +144,6 @@ public class Fingerprint {
      * @param image2 array containing each pixel's boolean value.
      * @return <code>True</code> if they are identical, <code>false</code>
      * otherwise.
-     * 
-     *
      */
     public static boolean identical(boolean[][] image1, boolean[][] image2) {
         if (image1.length != image2.length || image1[0].length != image2[0].length) {
@@ -173,27 +171,27 @@ public class Fingerprint {
     }
 
 
-    static boolean checksSteps(boolean[][] image, int row, int col, int step){
+    static boolean checksSteps(boolean[][] image, int row, int col, int step) {
         boolean pixel = image[row][col];
         boolean[] neighPixel = getNeighbours(image, row, col);
         int bNeighPixel = blackNeighbours(neighPixel);
-        
+
         //checks
-        boolean isPixelBlack = (pixel); 
-        boolean pNeighNonEm =  neighPixel != null;
-        boolean bNeighInterval = ((bNeighPixel <= 6) && (bNeighPixel >=2));
-        boolean transitionsNumber = (transitions(neighPixel)== 1);
+        boolean isPixelBlack = (pixel);
+        boolean pNeighNonEm = neighPixel != null;
+        boolean bNeighInterval = ((bNeighPixel <= 6) && (bNeighPixel >= 2));
+        boolean transitionsNumber = (transitions(neighPixel) == 1);
         boolean white024 = (!(neighPixel[0] && neighPixel[2] && neighPixel[4]));
         boolean white246 = (!(neighPixel[2] && neighPixel[4] && neighPixel[6]));
 
         boolean white026 = (!(neighPixel[0] && neighPixel[2] && neighPixel[6]));
         boolean white046 = (!(neighPixel[0] && neighPixel[4] && neighPixel[6]));
 
-        if (isPixelBlack && pNeighNonEm && bNeighInterval && transitionsNumber && white024 && white246 && step == 0){
+        if (isPixelBlack && pNeighNonEm && bNeighInterval && transitionsNumber && white024 && white246 && step == 0) {
             return true;
-        }else if (isPixelBlack && pNeighNonEm && bNeighInterval && transitionsNumber && white046 && white026 && step ==1){
+        } else if (isPixelBlack && pNeighNonEm && bNeighInterval && transitionsNumber && white046 && white026 && step == 1) {
             return true;
-        }else{
+        } else {
             return false;
         }
     }
@@ -201,18 +199,17 @@ public class Fingerprint {
     /**
      * Internal method used by {@link #thin(boolean[][])}.
      *
-     * @param image  array containing each pixel's boolean value.
-     * @param //step the step to apply, Step 0 or Step 1.
+     * @param image array containing each pixel's boolean value.
+     * @param step  the step to apply, Step 0 or Step 1.
      * @return A new array containing each pixel's value after the step.
      */
 
 
-    
     public static boolean[][] thinningStep(boolean[][] image, int step) {
         boolean[][] imageToModify = copyImage(image);
-        for (int row = 0; row<image.length; row++){
-            for (int col = 0; col<image[0].length; col++){
-                if (checksSteps(image, row, col, step)){
+        for (int row = 0; row < image.length; row++) {
+            for (int col = 0; col < image[0].length; col++) {
+                if (checksSteps(image, row, col, step)) {
                     imageToModify[row][col] = false;
                 }
             }
@@ -227,25 +224,43 @@ public class Fingerprint {
      * @return array containing the boolean value of each pixel of the image after
      * applying the thinning algorithm.
      */
-  
+
     public static boolean[][] thin(boolean[][] image) {
         boolean[][] newImage = copyImage(image);
         boolean[][] oldImage;
-        do{
+        do {
             oldImage = newImage;
             newImage = thinningStep(thinningStep(oldImage, 0), 1);
-        }while(!(identical(newImage,oldImage)));
+        } while (!(identical(newImage, oldImage)));
         return newImage;
     }
 
-    // static int[] getCoordonatesFromNeighbour(boolean[][]image, int row,int col){
-    //     int[] rowCol = new int[2];
-    //     boolean[] pixelNeighbour = getNeighbours(image, row, col);
-    //     for (int i=0; i<pixelNeighbour.length;i++){
-            
-    //     }
-    //     return rowCol;
-    // }
+
+    public static boolean isInsideSquare(boolean[][] image, int row, int col, int distance, int y, int x) {
+        int xLowDist = (col - distance < 0) ? 0 : col - distance;
+        int xHighDist = (col + distance > (image[0].length - 1)) ? (image[0].length - 1) : col + distance;
+        int yLowDist = (row - distance < 0) ? 0 : row - distance;
+        int yHighDist = (row + distance > (image.length - 1)) ? (image.length - 1) : row + distance;
+        if (y < yLowDist || y > yHighDist) {
+            return false;
+        } else if (x < xLowDist || x > xHighDist) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    static boolean[][] createOnlyMinutieImage(boolean[][] image, int row, int col) {
+        boolean[][] returnImage = copyImage(image);
+        for (int y = 0; y < image.length; y++) {
+            for (int x = 0; x < image[0].length; x++) {
+                returnImage[y][x] = false;
+            }
+        }
+        returnImage[row][col] = true;
+        return returnImage;
+    }
+
     /**
      * Computes all pixels that are connected to the pixel at coordinate
      * <code>(row, col)</code> and within the given distance of the pixel.
@@ -258,50 +273,34 @@ public class Fingerprint {
      * <code>distance</code> and connected to the pixel at
      * <code>(row, col)</code>.
      */
-    public static boolean isInsideSquare(boolean[][] image, int row, int col, int distance, int y, int x){
-        int xLowDist = (col-distance < 0) ? 0 : col-distance;
-        int xHighDist = (col+distance > (image[0].length -1)) ? (image[0].length -1) : col+distance;
-        int yLowDist = (row-distance < 0) ? 0 : row-distance;
-        int yHighDist = (row+distance > (image.length -1)) ? (image.length -1): row+distance;
-        if (y < yLowDist || y > yHighDist){
-            return false;
-        }else if (x < xLowDist || x > xHighDist){
-            return false;
-        }else{
-            return true;
-        }
-    }
-    
-    static boolean[][] createOnlyMinutieImage(boolean[][] image, int row, int col){
-        boolean[][] returnImage = copyImage(image);
-        for (int y = 0;y<image.length; y++){
-            for (int x =0;x<image[0].length;x++){
-                returnImage[y][x] = false;
-            }
-        }
-        returnImage[row][col] = true;
-        return returnImage;
-    }
 
-    
 
     public static boolean[][] connectedPixels(boolean[][] image, int row, int col, int distance) {
         boolean[][] minutie = createOnlyMinutieImage(image, row, col);
         boolean[][] oldMinutie;
-        do{
+        do {
             oldMinutie = copyImage(minutie);
-            for (int y = 0; y<image.length; y++){
-                for (int x = 0; x<image[0].length; x++){
-                    if (isInsideSquare(image, row, col, distance, y, x) && image[y][x]){
-                    if (blackNeighbours(getNeighbours(minutie, y, x)) >=1){
-                        minutie[y][x] = true;
+            for (int y = 0; y < image.length; y++) {
+                for (int x = 0; x < image[0].length; x++) {
+                    if (isInsideSquare(image, row, col, distance, y, x) && image[y][x]) {
+                        if (blackNeighbours(getNeighbours(minutie, y, x)) >= 1) {
+                            minutie[y][x] = true;
+                        }
                     }
                 }
             }
-        }
-    }while(!identical(oldMinutie, minutie));
-    return minutie;
+        } while (!identical(oldMinutie, minutie));
+        return minutie;
     }
+
+    static int calculateX(int col, int colM) {
+        return col - colM;
+    }
+
+    static int calculateY(int row, int rowM) {
+        return rowM - row;
+    }
+
     /**
      * Computes the slope of a minutia using linear regression.
      *
@@ -311,39 +310,37 @@ public class Fingerprint {
      * @param col             the col of the minutia.
      * @return the slope.
      */
+
     public static double computeSlope(boolean[][] connectedPixels, int row, int col) {
-        double sumMult=0;
-        double sumSqrX=0;
-        double sumSqrY=0;
-        double slope=0;
+        double sumXY = 0;
+        double sumSqrX = 0;
+        double sumSqrY = 0;
 
-        for(int i =0;i< connectedPixels.length;i++){
-            for(int j =0;j< connectedPixels.length;j++){
-                if (connectedPixels[i][j]){
-                    int x=i-col;
-                    int y=row-j;
-                    sumMult=sumMult+(x*y);
-                    sumSqrX=sumSqrX+(x*x);
-                    sumSqrY=sumSqrY+(y*y);
-
+        for (int y = 0; y < connectedPixels.length; y++) {
+            for (int x = 0; x < connectedPixels[0].length; x++) {
+                if (connectedPixels[y][x]) {
+                    sumXY += (calculateX(x, col) * calculateY(y, row));
+                    sumSqrX += Math.pow(calculateX(x, col), 2);
+                    sumSqrY += Math.pow(calculateY(y, row), 2);
                 }
-
             }
-
         }
-        if(sumSqrX==0){
+        if (sumSqrX == 2) {
             return Double.POSITIVE_INFINITY;
+        } else if (sumSqrX >= sumSqrY) {
+            return sumXY / sumSqrX;
+        } else {
+            return sumSqrY / sumXY;
         }
-        else if(sumSqrX>=sumSqrY){
-            slope=sumMult/sumSqrX;
-            return slope;
+    }
 
+    static boolean isInTheUpside(int y, int x, double slope) {
+        double newSlope = -1 / slope;
+        if (y >= (newSlope * x)) {
+            return true;
+        } else {
+            return false;
         }
-        else{
-            slope=sumSqrY/sumMult;
-            return slope;
-        }
-
     }
 
     /**
@@ -357,9 +354,38 @@ public class Fingerprint {
      *                        {@link #//computeSlope(boolean[][], int, int, int)}.
      * @return the orientation of the minutia in radians.
      */
+
     public static double computeAngle(boolean[][] connectedPixels, int row, int col, double slope) {
-        //TODO implement
-        return 0;
+        int upSideCount = 0;
+        int downSideCount = 0;
+        double angle = Math.atan(slope);
+
+        for (int y = 0; y < connectedPixels.length; y++) {
+            for (int x = 0; x < connectedPixels[0].length; x++) {
+                if (connectedPixels[y][x]) {
+                    if (isInTheUpside(calculateY(y, row), calculateX(x, col), slope)) {
+                        upSideCount++;
+                    } else {
+                        downSideCount++;
+                    }
+                }
+            }
+        }
+
+        if (angle == Double.POSITIVE_INFINITY) {
+            if (upSideCount > downSideCount) {
+                return Math.PI / 2;
+            } else {
+                return -(Math.PI / 2);
+            }
+        } else if ((angle > 0) && (downSideCount > upSideCount)) {
+            return angle + Math.PI;
+        } else if ((angle < 0) && (downSideCount < upSideCount)) {
+            return angle + Math.PI;
+        } else {
+            return angle;
+        }
+
     }
 
     /**
@@ -374,8 +400,16 @@ public class Fingerprint {
      * @return The orientation in degrees.
      */
     public static int computeOrientation(boolean[][] image, int row, int col, int distance) {
-        //TODO implement
-        return 0;
+        boolean[][] connectedPixelResult = connectedPixels(image, row, col, distance);
+        double slope = computeSlope(connectedPixelResult, row, col);
+        double angle = computeAngle(connectedPixelResult, row, col, slope);
+        double degreeAngle = angle * (Math.PI / 180);
+        if (degreeAngle < 0) {
+            degreeAngle += 360;
+        }
+
+        return (int) Math.round(degreeAngle * 2);
+
     }
 
     /**
@@ -388,8 +422,16 @@ public class Fingerprint {
      * @see #thin(boolean[][])
      */
     public static List<int[]> extract(boolean[][] image) {
-        //TODO implement
-        return null;
+        ArrayList<int[]> minuties = new ArrayList<int[]>();
+        for (int y = 1; y < image.length - 1; y++) {
+            for (int x = 1; x < image.length - 1; x++) {
+                int a = transitions(getNeighbours(image, y, x));
+                if (a == 1 || a == 3) {
+                    minuties.add(new int[]{y, x});
+                }
+            }
+        }
+        return minuties;
     }
 
     /**
