@@ -325,7 +325,7 @@ public class Fingerprint {
                 }
             }
         }
-        if (sumSqrX == 2) {
+        if (sumSqrX == 0) {
             return Double.POSITIVE_INFINITY;
         } else if (sumSqrX >= sumSqrY) {
             return sumXY / sumSqrX;
@@ -403,12 +403,11 @@ public class Fingerprint {
         boolean[][] connectedPixelResult = connectedPixels(image, row, col, distance);
         double slope = computeSlope(connectedPixelResult, row, col);
         double angle = computeAngle(connectedPixelResult, row, col, slope);
-        double degreeAngle = angle * (Math.PI / 180);
+        double degreeAngle = Math.toDegrees(angle);
         if (degreeAngle < 0) {
             degreeAngle += 360;
         }
-
-        return (int) Math.round(degreeAngle * 2);
+        return (int) Math.round(degreeAngle);
 
     }
 
