@@ -21,8 +21,8 @@ public class Main {
         System.out.println("Uncomment the function calls in Main.main to test your implementation.");
         System.out.println("The provided tests are not complete. You have to write your own tests.");
         testExtract();
-        //testSlope();
-        //testAngle();
+        // testSlope();
+        // testAngle();
         // testGetNeighbours();
         // testBlackNeighbours();
         // testTransition();
@@ -30,7 +30,7 @@ public class Main {
         // testConnectedPixelsF();
         // testConnectedPixels2();
         // testConnectedPixels3();
-        //testOrientation();
+        // testOrientation();
         //testApplyRotation();
         //testApplyTranslation();
         // testThin();
