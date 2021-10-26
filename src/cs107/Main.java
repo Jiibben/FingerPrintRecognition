@@ -24,7 +24,7 @@ public class Main {
         testBlackNeighbours();
         testTransition();
         testIdentical();
-        //testConnectedPixels1();
+        testConnectedPixels();
         //testConnectedPixels2();
         //testConnectedPixels3();
         //testOrientation();
@@ -104,7 +104,25 @@ public class Main {
                 false, false, false,
                 true, false};
         if (Fingerprint.blackNeighbours(neighbours) == 3) {
-            System.out.println("blackneighbours ok ");
+            System.out.println(" ok ");
+        } else {
+            System.out.println("error");
+        }
+        System.out.print("testBlackNeighbours 2: ");
+        boolean[] neighbours2 = {false, false, false,
+                false, false, false,
+                false, false};
+        if (Fingerprint.blackNeighbours(neighbours2) == 0) {
+            System.out.println(" ok ");
+        } else {
+            System.out.println("error");
+        }
+        System.out.print("testBlackNeighbours 3: ");
+        boolean[] neighbours3 = {true, false, false,
+                false, false, true,
+                false, false};
+        if (Fingerprint.blackNeighbours(neighbours3) == 2) {
+            System.out.println(" ok ");
         } else {
             System.out.println("error");
         }
@@ -117,7 +135,25 @@ public class Main {
                 false, false, false,
                 false, false};
         if (Fingerprint.transitions(neighbours) == 0) {
-            System.out.println("testTransition ok ");
+            System.out.println(" ok ");
+        } else {
+            System.out.println("error");
+        }
+        System.out.print("testTransition 2: ");
+        boolean[] neighbours2 = {false, true, false,
+                false, false, true,
+                false, true};
+        if (Fingerprint.transitions(neighbours2) == 3) {
+            System.out.println(" ok ");
+        } else {
+            System.out.println("error");
+        }
+        System.out.print("testTransition 3: ");
+        boolean[] neighbours3 = {true, false, false,
+                false, false, false,
+                false, false};
+        if (Fingerprint.transitions(neighbours3) == 1) {
+            System.out.println(" ok ");
         } else {
             System.out.println("error");
         }
@@ -133,6 +169,19 @@ public class Main {
                 {false, false, false},
                 {true, false, true}};
         if (Fingerprint.identical(a, b)) {
+            System.out.println("ok");
+        } else {
+            System.out.println("error");
+        }
+        System.out.print("testIdentical 2: ");
+        boolean[][] d = {{false, false, true},
+                {false, false, false},
+                {true, false, true}};
+
+        boolean[][] c = {{false, true, true},
+                {false, false, false},
+                {true, false, true}};
+        if (!(Fingerprint.identical(d, c))) {
             System.out.println("ok");
         } else {
             System.out.println("error");
@@ -154,7 +203,7 @@ public class Main {
                 {false, false, true, true},
                 {false, true, true, false},
                 {false, false, false, false}};
-        boolean[][] connectedPixels = Fingerprint.connectedPixels(image, 2, 1, 10);
+        boolean[][] connectedPixels = Fingerprint.connectedPixels(image, 2, 1, 1);
         if (arrayEqual(connectedPixels, expected)) {
             System.out.println("OK");
         } else {
@@ -165,7 +214,27 @@ public class Main {
             printArray(connectedPixels);
         }
     }
-
+    public static void testConnectedPixels() {
+        System.out.print("testConnectedPixels: ");
+        boolean[][] image = {{true, false, false, true, true},
+        {false, false, true, true, false},
+        {false, true, true, false, false},
+        {false, false, false, false, false}};
+        boolean[][] expected = {{true, false, false, true, false},
+        {false, false, true, true, false},
+        {false, true, true, false, false},
+        {false, false, false, false, false}};
+        boolean[][] connectedPixels = Fingerprint.connectedPixels(image, 2, 1, 1);
+        if (arrayEqual(connectedPixels, expected)) {
+            System.out.println("OK");
+        } else {
+            System.out.println("ERROR");
+            System.out.print("Expected: ");
+            printArray(expected);
+            System.out.print("Computed: ");
+            printArray(connectedPixels);
+        }
+    }
     /**
      * This function is here to help you test the functionalities of
      * connectedPixels. You are free to modify and/or delete it.
