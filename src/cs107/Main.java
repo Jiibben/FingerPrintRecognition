@@ -20,6 +20,7 @@ public class Main {
         //---------------------------
         System.out.println("Uncomment the function calls in Main.main to test your implementation.");
         System.out.println("The provided tests are not complete. You have to write your own tests.");
+// -----------------------------> works <-----------------------------------------------------
         // testExtract();
         // testSlope();
         // testAngle();
@@ -30,25 +31,29 @@ public class Main {
         // testConnectedPixelsF();
         // testConnectedPixels2();
         // testConnectedPixels3();
-        testOrientation();
-        //testApplyRotation();
-        //testApplyTranslation();
+        // testOrientation();
+        // testApplyTranslation();
         // testThin();
-        //testWithSkeleton();
 
-        //testDrawSkeleton("1_1"); //draw skeleton of fingerprint 1_1.png
+// ------------------------> doesn't work <-----------------------------------------//
+        // testApplyRotation();
+        
+        
+        // testWithSkeleton();
+
+        // testDrawSkeleton("1_1"); //draw skeleton of fingerprint 1_1.png
         //testDrawSkeleton("1_2"); //draw skeleton of fingerprint 1_2.png
         //testDrawSkeleton("2_1"); //draw skeleton of fingerprint 2_1.png
 
-        //testDrawMinutiae("1_1"); //draw minutiae of fingerprint 1_1.png
-        //testDrawMinutiae("1_2"); //draw minutiae of fingerprint 1_2.png
+        // testDrawMinutiae("1_1"); //draw minutiae of fingerprint 1_1.png
+        // testDrawMinutiae("1_2"); //draw minutiae of fingerprint 1_2.png
         //testDrawMinutiae("2_1"); //draw minutiae of fingerprint 2_1.png
 
         //---------------------------
         // Test overall functionality
         //---------------------------
         //compare 1_1.png with 1_2.png: they are supposed to match
-        //testCompareFingerprints("1_1", "1_2", true);  //expected match: true
+        // testCompareFingerprints("1_1", "1_2", true);  //expected match: true
 
         //compare 1_1.png with 2_1.png: they are not supposed to match
         //testCompareFingerprints("1_1", "2_1", false); //expected match: false

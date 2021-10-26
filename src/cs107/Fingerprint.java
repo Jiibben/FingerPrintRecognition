@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.sound.sampled.SourceDataLine;
 
 /**
  * Provides tools to compare fingerprint.
@@ -72,11 +71,11 @@ public class Fingerprint {
         // earlier)
         //row to consider row -1, row, row + 1
         //column to consider
-        try {
-            boolean a = image[row][col];
-        } catch (ArrayIndexOutOfBoundsException e) {
-            return null;
-        }
+        // try {
+        //     boolean a = image[row][col];
+        // } catch (ArrayIndexOutOfBoundsException e) {
+        //     return null;
+        // }
         return new boolean[]{getPixel(image, row - 1, col),
                 getPixel(image, row - 1, col + 1),
                 getPixel(image, row, col + 1),
@@ -427,7 +426,6 @@ public class Fingerprint {
             for (int x = 1; x < image.length - 1; x++) {
                 int a = transitions(getNeighbours(image, y, x));
                 if (a == 1 || a == 3) {
-                    //Distance éronnéee
                     int z = computeOrientation(image, y, x, ORIENTATION_DISTANCE);
                     minuties.add(new int[]{y, x, z});
                 }
@@ -449,10 +447,10 @@ public class Fingerprint {
         double angleRad = Math.toRadians(rotation);
         int x = minutia[1] - centerCol;
         int y = centerRow - minutia[0];
-        double newX = (x * Math.cos(angleRad) - (y * Math.sin(angleRad)));
-        double newY = (y * Math.sin(angleRad)) + (y * Math.cos(angleRad));
-        int newRow = (int) (centerRow - newY);
-        int newCol = (int) (newX + centerCol);
+        int newX = (int) ((x * Math.cos(angleRad)) - (y * Math.sin(angleRad)));
+        int newY = (int) ((y * Math.sin(angleRad)) + (y * Math.cos(angleRad)));
+        int newRow = (centerRow - newY);
+        int newCol = (newX + centerCol);
         int newOrientation = (int) ((minutia[2] + rotation) % 360);
         return new int[]{newRow, newCol, newOrientation};
 
@@ -471,8 +469,6 @@ public class Fingerprint {
         int newCol = minutia[1] - colTranslation;
         int newOrientation = minutia[2];
         return new int[]{newRow, newCol, newOrientation};
-
-
     }
 
     /**
@@ -489,7 +485,7 @@ public class Fingerprint {
      */
 
     public static int[] applyTransformation(int[] minutia, int centerRow, int centerCol, int rowTranslation, int colTranslation, int rotation) {
-        return applyTransformation(applyRotation(minutia, centerRow, centerCol, rotation), centerRow, centerCol, rowTranslation, colTranslation, rotation);
+        return applyTranslation(applyRotation(minutia, centerRow, centerCol, rotation), rowTranslation, colTranslation);
     }
 
     /**
@@ -545,10 +541,24 @@ public class Fingerprint {
      * otherwise.
      */
     public static boolean match(List<int[]> minutiae1, List<int[]> minutiae2) {
-        if (matchingMinutiaeCount(minutiae1, minutiae2, DISTANCE_THRESHOLD, ORIENTATION_THRESHOLD)>= FOUND_THRESHOLD){
-            return true;
-        }else{
-            return false;
+        int nMatch = 0;
+    for (int m1 = 0; m1<minutiae1.size(); m1++){
+        for(int m2 = 0; m2<minutiae2.size(); m2++){
+            int rowTranslation = minutiae2.get(m2)[0] - minutiae1.get(m1)[0];
+            int colTranslation = minutiae2.get(m2)[1] - minutiae1.get(m1)[1];
+            int centerRow = minutiae1.get(m1)[0];
+            int centerCol = minutiae1.get(m1)[1];
+            int rotation = minutiae2.get(m2)[2] - minutiae1.get(m1)[2];
+            for (int r = rotation-MATCH_ANGLE_OFFSET;r <= rotation+MATCH_ANGLE_OFFSET;r++ ){
+                nMatch += matchingMinutiaeCount(minutiae1, applyTransformation(minutiae2, centerRow, centerCol, rowTranslation, colTranslation, rotation), DISTANCE_THRESHOLD, ORIENTATION_THRESHOLD);
+            }
         }
+
     }
+    if (nMatch >= FOUND_THRESHOLD ){
+        return true;
+    }else{
+        return false;
+    }
+}
 }
