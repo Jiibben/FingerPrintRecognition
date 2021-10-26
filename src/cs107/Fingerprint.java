@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.sound.sampled.SourceDataLine;
+
 /**
  * Provides tools to compare fingerprint.
  */
@@ -155,45 +157,6 @@ public class Fingerprint {
         return true;
     }
 
-    /**
-     * Internal method used by {@link #thin(boolean[][])}.
-     *
-     * @param image  array containing each pixel's boolean value.
-     * @param //step the step to apply, Step 0 or Step 1.
-     * @return A new array containing each pixel's value after the step.
-     */
-    static boolean checkAllStep(boolean[][] image, int row, int col) {
-        boolean[] pixelNeighbours = getNeighbours(image, row, col);
-        int pixelBlackNeighbours = blackNeighbours(pixelNeighbours);
-        boolean isPixelBlack = image[row][col];
-        boolean isNeighbourTabNonNull = pixelBlackNeighbours >= 1;
-        boolean IntervalBlackNeigh = pixelBlackNeighbours >= 2 && pixelBlackNeighbours <= 6;
-        boolean white024 = !(pixelNeighbours[0] && pixelNeighbours[2] && pixelNeighbours[3]);
-        boolean white246 = !(pixelNeighbours[2] && pixelNeighbours[4] && pixelNeighbours[6]);
-        if (isPixelBlack && isNeighbourTabNonNull && IntervalBlackNeigh & white024 && white246) {
-            return true;
-        }
-        return false;
-    }
-
-    public static boolean[][] thinningStep(boolean[][] image, int step) {
-        for (int row = 0; row < image.length; row++) {
-            for (int col = 0; col < image.length; col++) {
-                if (checkAllStep(image, row, col)) {
-                    image[row][col] = false;
-                }
-            }
-        }
-        return image;
-    }
-
-    /**
-     * Compute the skeleton of a boolean image.
-     *
-     * @param image array containing each pixel's boolean value.
-     * @return array containing the boolean value of each pixel of the image after
-     * applying the thinning algorithm.
-     */
     static boolean[][] copyImage(boolean[][] image) {
         boolean[][] newImage = new boolean[image.length][image[0].length];
         for (int row = 0; row < image.length; row++) {
@@ -204,14 +167,91 @@ public class Fingerprint {
         return newImage;
     }
 
-    public static boolean[][] thin(boolean[][] image) {
-        boolean[][] imageNotMod = copyImage(image);
-        thinningStep(image, 0);
-        if (identical(imageNotMod, image)) {
-            return image;
-        } else {
-            return thin(image);
+
+    static boolean isNeighbourNull(boolean[] neighbour){
+        for (boolean i : neighbour){
+            if (i){
+                return false;
+            }
         }
+        return true;
+    }
+
+    static boolean checksSteps(boolean[][] image, int row, int col, int step){
+        boolean pixel = image[row][col];
+        boolean[] neighPixel = getNeighbours(image, row, col);
+        int bNeighPixel = blackNeighbours(neighPixel);
+        
+        //checks
+        boolean isPixelBlack = (pixel); 
+        boolean pNeighNonEm =  !(isNeighbourNull(neighPixel));
+        boolean bNeighInterval = (bNeighPixel <= 6) && (bNeighPixel >=2);
+        boolean transitionsNumber = (transitions(neighPixel) == 1);
+        boolean white024 = (!(neighPixel[0] && neighPixel[2] && neighPixel[4]));
+        boolean white246 = (!(neighPixel[2] && neighPixel[4] && neighPixel[6]));
+
+        boolean white026 = (!(neighPixel[0] && neighPixel[2] && neighPixel[6]));
+        boolean white046 = (!(neighPixel[0] && neighPixel[4] && neighPixel[6]));
+
+        if (isPixelBlack && pNeighNonEm && bNeighInterval && transitionsNumber && white024 && white246 && step ==0){
+            return true;
+        }else if (isPixelBlack && pNeighNonEm && bNeighInterval && transitionsNumber && white046 && white026 && step ==1){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    /**
+     * Internal method used by {@link #thin(boolean[][])}.
+     *
+     * @param image  array containing each pixel's boolean value.
+     * @param //step the step to apply, Step 0 or Step 1.
+     * @return A new array containing each pixel's value after the step.
+     */
+
+
+    
+    public static boolean[][] thinningStep(boolean[][] image, int step) {
+        boolean[][] imageToModify = copyImage(image);
+        //step 1;
+        for (int row = 0; row<image.length; row++){
+            for (int col = 0; col<image[0].length; col++){
+                if (checksSteps(image, row, col, 0)){
+                    imageToModify[row][col] = false;
+                }
+            }
+        }
+        //step 2;
+        boolean[][] imageToModify2 = copyImage(imageToModify);
+        for (int row = 0; row<image.length; row++){
+            for (int col = 0; col<image[0].length; col++){
+                if (checksSteps(imageToModify, row, col, 1)){
+                    imageToModify2[row][col] = false;
+                }
+            }
+        }
+
+        return imageToModify2;
+
+    }
+
+    /**
+     * Compute the skeleton of a boolean image.
+     *
+     * @param image array containing each pixel's boolean value.
+     * @return array containing the boolean value of each pixel of the image after
+     * applying the thinning algorithm.
+     */
+  
+    public static boolean[][] thin(boolean[][] image) {
+        boolean[][] newImage = copyImage(image);
+        boolean[][] oldImage;
+        do{
+            oldImage = newImage;
+            newImage = thinningStep(copyImage(oldImage), 0);
+        }while(!(identical(newImage,oldImage)));
+        return newImage;        
     }
 
     /**

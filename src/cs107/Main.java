@@ -113,10 +113,10 @@ public class Main {
 
     public static void testTransition() {
         System.out.print("testTransition 1: ");
-        boolean[] neighbours = {false, true, true,
+        boolean[] neighbours = {false, false, false,
                 false, false, false,
-                true, false};
-        if (Fingerprint.transitions(neighbours) == 2) {
+                false, false};
+        if (Fingerprint.transitions(neighbours) == 0) {
             System.out.println("testTransition ok ");
         } else {
             System.out.println("error");
