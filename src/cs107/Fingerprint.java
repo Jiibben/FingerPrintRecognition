@@ -144,6 +144,8 @@ public class Fingerprint {
      * @param image2 array containing each pixel's boolean value.
      * @return <code>True</code> if they are identical, <code>false</code>
      * otherwise.
+     * 
+     *
      */
     public static boolean identical(boolean[][] image1, boolean[][] image2) {
         if (image1.length != image2.length || image1[0].length != image2[0].length) {
@@ -170,15 +172,6 @@ public class Fingerprint {
         return newImage;
     }
 
-
-    static boolean isNeighbourNull(boolean[] neighbour){
-        for (boolean i : neighbour){
-            if (i){
-                return false;
-            }
-        }
-        return true;
-    }
 
     static boolean checksSteps(boolean[][] image, int row, int col, int step){
         boolean pixel = image[row][col];
@@ -265,10 +258,49 @@ public class Fingerprint {
      * <code>distance</code> and connected to the pixel at
      * <code>(row, col)</code>.
      */
+    public static boolean isInsideSquare(boolean[][] image, int row, int col, int distance, int y, int x){
+        int xLowDist = (col-distance < 0) ? 0 : col-distance;
+        int xHighDist = (col+distance > (image[0].length -1)) ? (image[0].length -1) : col+distance;
+        int yLowDist = (row-distance < 0) ? 0 : row-distance;
+        int yHighDist = (row+distance > (image.length -1)) ? (image.length -1): row+distance;
+        if (y < yLowDist || y > yHighDist){
+            return false;
+        }else if (x < xLowDist || x > xHighDist){
+            return false;
+        }else{
+            return true;
+        }
+    }
+    
+    static boolean[][] createOnlyMinutieImage(boolean[][] image, int row, int col){
+        boolean[][] returnImage = copyImage(image);
+        for (int y = 0;y<image.length; y++){
+            for (int x =0;x<image[0].length;x++){
+                returnImage[y][x] = false;
+            }
+        }
+        returnImage[row][col] = true;
+        return returnImage;
+    }
+
+    
 
     public static boolean[][] connectedPixels(boolean[][] image, int row, int col, int distance) {
-        
-        return null;
+        boolean[][] minutie = createOnlyMinutieImage(image, row, col);
+        boolean[][] oldMinutie;
+        do{
+            oldMinutie = copyImage(minutie);
+            for (int y = 0; y<image.length; y++){
+                for (int x = 0; x<image[0].length; x++){
+                    if (isInsideSquare(image, row, col, distance, y, x) && image[y][x]){
+                    if (blackNeighbours(getNeighbours(minutie, y, x)) >=1){
+                        minutie[y][x] = true;
+                    }
+                }
+            }
+        }
+    }while(!identical(oldMinutie, minutie));
+    return minutie;
     }
     /**
      * Computes the slope of a minutia using linear regression.
@@ -280,8 +312,38 @@ public class Fingerprint {
      * @return the slope.
      */
     public static double computeSlope(boolean[][] connectedPixels, int row, int col) {
-        //TODO implement
-        return 0;
+        double sumMult=0;
+        double sumSqrX=0;
+        double sumSqrY=0;
+        double slope=0;
+
+        for(int i =0;i< connectedPixels.length;i++){
+            for(int j =0;j< connectedPixels.length;j++){
+                if (connectedPixels[i][j]){
+                    int x=i-col;
+                    int y=row-j;
+                    sumMult=sumMult+(x*y);
+                    sumSqrX=sumSqrX+(x*x);
+                    sumSqrY=sumSqrY+(y*y);
+
+                }
+
+            }
+
+        }
+        if(sumSqrX==0){
+            return Double.POSITIVE_INFINITY;
+        }
+        else if(sumSqrX>=sumSqrY){
+            slope=sumMult/sumSqrX;
+            return slope;
+
+        }
+        else{
+            slope=sumSqrY/sumMult;
+            return slope;
+        }
+
     }
 
     /**
