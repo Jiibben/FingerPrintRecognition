@@ -3,7 +3,6 @@ package cs107;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.sound.sampled.SourceDataLine;
 
 /**
  * This class will not be graded. You can use it to test your program.
@@ -23,48 +22,48 @@ public class Main {
         System.out.println("Uncomment the function calls in Main.main to test your implementation.");
         System.out.println("The provided tests are not complete. You have to write your own tests.");
 // -----------------------------> works <-----------------------------------------------------
-        testExtract();
-        testSlope();
-        testAngle();
-        testGetNeighbours();
-        testBlackNeighbours();
-        testTransition();
-        testIdentical();
-        testConnectedPixelsF();
-        testConnectedPixels2();
-        testConnectedPixels3();
-        testOrientation();
-        testApplyTranslation();
-        testThin();
-        testWithSkeleton();
+        // testExtract();
+        // testSlope();
+        // testAngle();
+        // testGetNeighbours();
+        // testBlackNeighbours();
+        // testTransition();
+        // testIdentical();
+        // testConnectedPixelsF();
+        // testConnectedPixels2();
+        // testConnectedPixels3();
+        // testOrientation();
+        // testApplyTranslation();
+        // testThin();
+        // testWithSkeleton();
 
-        testDrawSkeleton("1_1"); //draw skeleton of fingerprint 1_1.png
-        testDrawSkeleton("1_2"); //draw skeleton of fingerprint 1_2.png
-        testDrawSkeleton("2_1"); //draw skeleton of fingerprint 2_1.png
+        // testDrawSkeleton("1_1"); //draw skeleton of fingerprint 1_1.png
+        // testDrawSkeleton("1_2"); //draw skeleton of fingerprint 1_2.png
+        // testDrawSkeleton("2_1"); //draw skeleton of fingerprint 2_1.png
 
-        testDrawMinutiae("1_1"); //draw minutiae of fingerprint 1_1.png
-        testDrawMinutiae("1_2"); //draw minutiae of fingerprint 1_2.png
-        testDrawMinutiae("2_1"); //draw minutiae of fingerprint 2_1.png
+        // testDrawMinutiae("1_1"); //draw minutiae of fingerprint 1_1.png
+        // testDrawMinutiae("1_2"); //draw minutiae of fingerprint 1_2.png
+        // testDrawMinutiae("2_1"); //draw minutiae of fingerprint 2_1.png
+        // testApplyRotation();
 
 
 
 // ------------------------> doesn't work <-----------------------------------------//
-        // testApplyRotation();
         
-        
+        testMatchingMinutiae();
 
-
+        // testExtract();
         //---------------------------
         // Test overall functionality
         //---------------------------
-        //compare 1_1.png with 1_2.png: they are supposed to match
+        // compare 1_1.png with 1_2.png: they are supposed to match
         // testCompareFingerprints("1_1", "1_2", true);  //expected match: true
 
         //compare 1_1.png with 2_1.png: they are not supposed to match
-        //testCompareFingerprints("1_1", "2_1", false); //expected match: false
+        // testCompareFingerprints("1_1", "2_1", false); //expected match: false
 
         //compare 1_1 with all other images of the same finger
-        //testCompareAllFingerprints("1_1", 1, true);
+        // testCompareAllFingerprints("1_1", 1, true);
 
         //compare 1_1 with all images of finger 2
         //testCompareAllFingerprints("1_1", 2, false);
@@ -79,15 +78,26 @@ public class Main {
      * This function is here to help you test the functionalities of
      * getNeighbours. You are free to modify and/or delete it.
      */
+    public static void testMatchingMinutiae(){
+        System.out.print("testMatchingMinutiae: ");
+        int a = Fingerprint.matchingMinutiaeCount(Fingerprint.extract(Helper.readBinary("resources/test_outputs/skeleton_1_1_small.png")), Fingerprint.extract(Helper.readBinary("resources/test_outputs/skeleton_1_1_small.png")), Fingerprint.DISTANCE_THRESHOLD, Fingerprint.ORIENTATION_THRESHOLD);
+        if (a == 10){
+            System.out.println("ok");
+        }else{
+            System.out.println("error");
+        }
+    }
 
     public static void testExtract() {
-        boolean[][] image = {{true, false, false, true, true},
-                {false, false, true, true, true},
-                {false, true, true, false, true},
-                {false, false, false, false, false}};
-        for (int[] i : Fingerprint.extract(image)) {
+        System.out.println("testExtract: ");
+
+        List<int[]> liste = Fingerprint.extract(Helper.readBinary("resources/test_outputs/skeleton_1_1_small.png"));
+        for (int[] i : liste) {
             System.out.println(i[0] + " " + i[1]);
         }
+
+        System.out.println("found " + liste.size() + " minutiae");
+        System.out.println("-----------------------------");
     }
 
     public static void testGetNeighbours() {

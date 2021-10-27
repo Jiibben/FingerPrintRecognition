@@ -3,7 +3,6 @@ package cs107;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.sound.sampled.SourceDataLine;
 
 
 /**
@@ -453,11 +452,13 @@ public class Fingerprint {
         double angleRad = Math.toRadians(rotation);
         int x = minutia[1] - centerCol;
         int y = (centerRow - minutia[0]);
-        double newX = Math.round((x * Math.cos(angleRad)) - (y * Math.sin(angleRad)));
-        double newY = Math.round((y * Math.sin(angleRad)) + (y * Math.cos(angleRad)));
-        int newRow = (int) (centerRow - newY);
-        int newCol = (int) (newX + centerCol);
-        int newOrientation = (int) ((minutia[2] + rotation) % 360);
+        double cos = Math.cos(angleRad);
+        double sin = Math.sin(angleRad);
+        double newX = (x*cos) - (y*sin);
+        double newY = (x*sin) + (y*cos);
+        int newRow = (int) Math.round((centerRow - newY));
+        int newCol = (int) Math.round((newX + centerCol));
+        int newOrientation = (int) Math.round((minutia[2] + rotation) % 360);
         return new int[]{newRow, newCol, newOrientation};
 
     }
@@ -507,10 +508,11 @@ public class Fingerprint {
      * @return the list of transformed minutiae.
      */
     public static List<int[]> applyTransformation(List<int[]> minutiae, int centerRow, int centerCol, int rowTranslation, int colTranslation, int rotation) {
+        ArrayList<int[]> returnMinutiae = new ArrayList<int[]>();
         for (int i = 0; i<minutiae.size(); i++){
-            minutiae.set(i, applyTransformation(minutiae.get(i), centerRow, centerCol, rowTranslation, colTranslation, rotation));
+            returnMinutiae.add(applyTransformation(minutiae.get(i), centerRow, centerCol, rowTranslation, colTranslation, rotation));
         }
-        return minutiae;
+        return returnMinutiae;
     }
 
     /**
