@@ -1,8 +1,9 @@
 package cs107;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+
+import javax.sound.sampled.SourceDataLine;
 
 
 /**
@@ -126,11 +127,11 @@ public class Fingerprint {
     public static int transitions(boolean[] neighbours) {
         int acc = 0;
         for (int i = 0; i < neighbours.length - 1; i++) {
-            if (!(neighbours[i]) && neighbours[i + 1]) {
+            if ((!neighbours[i]) && neighbours[i + 1]) {
                 acc++;
             }
         }
-        if (!(neighbours[neighbours.length - 1]) && neighbours[0]) {
+        if ((!neighbours[neighbours.length -1]) && neighbours[0]) {
             acc++;
         }
         return acc;
@@ -145,6 +146,9 @@ public class Fingerprint {
      * otherwise.
      */
     public static boolean identical(boolean[][] image1, boolean[][] image2) {
+        if (image1.length != image2.length || image1[0].length != image2[0].length){
+            return false;
+        }
         if (image1.length != image2.length || image1[0].length != image2[0].length) {
             return false;
         } else {
@@ -422,18 +426,20 @@ public class Fingerprint {
     public static List<int[]> extract(boolean[][] image) {
         ArrayList<int[]> minuties = new ArrayList<int[]>();
 
+        int a;
         for (int y = 1; y < image.length - 1; y++) {
-            for (int x = 1; x < image.length - 1; x++) {
-                int a = transitions(getNeighbours(image, y, x));
-                if (a == 1 || a == 3) {
+            for (int x = 1; x < image[0].length - 1; x++) {
+                a = transitions(getNeighbours(image, y, x));
+                if (image[y][x]){
+                if (a == 1 || a == 3) {       
                     int z = computeOrientation(image, y, x, ORIENTATION_DISTANCE);
                     minuties.add(new int[]{y, x, z});
                 }
             }
+            }
         }
         return minuties;
     }
-
     /**
      * Applies the specified rotation to the minutia.
      *
@@ -446,11 +452,11 @@ public class Fingerprint {
     public static int[] applyRotation(int[] minutia, int centerRow, int centerCol, int rotation) {
         double angleRad = Math.toRadians(rotation);
         int x = minutia[1] - centerCol;
-        int y = centerRow - minutia[0];
-        int newX = (int) ((x * Math.cos(angleRad)) - (y * Math.sin(angleRad)));
-        int newY = (int) ((y * Math.sin(angleRad)) + (y * Math.cos(angleRad)));
-        int newRow = (centerRow - newY);
-        int newCol = (newX + centerCol);
+        int y = (centerRow - minutia[0]);
+        double newX = Math.round((x * Math.cos(angleRad)) - (y * Math.sin(angleRad)));
+        double newY = Math.round((y * Math.sin(angleRad)) + (y * Math.cos(angleRad)));
+        int newRow = (int) (centerRow - newY);
+        int newCol = (int) (newX + centerCol);
         int newOrientation = (int) ((minutia[2] + rotation) % 360);
         return new int[]{newRow, newCol, newOrientation};
 
@@ -472,7 +478,7 @@ public class Fingerprint {
     }
 
     /**
-     * Computes the row, column, and angle after applying a transformation
+     * Computes the row, column, and angle a3fter applying a transformation
      * (translation and rotation).
      *
      * @param minutia        the original minutia.

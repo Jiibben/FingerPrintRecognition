@@ -171,7 +171,7 @@ public final class Helper {
     final BufferedImage image = toBufferedImage(array);
 
     // Create a panel to render this image
-    @SuppressWarnings("serial")
+    // @SuppressWarnings("serial")
     final JPanel panel = new JPanel() {
       @Override
       protected void paintComponent(final Graphics g) {

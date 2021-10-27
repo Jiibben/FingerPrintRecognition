@@ -3,6 +3,8 @@ package cs107;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.sound.sampled.SourceDataLine;
+
 /**
  * This class will not be graded. You can use it to test your program.
  */
@@ -21,33 +23,36 @@ public class Main {
         System.out.println("Uncomment the function calls in Main.main to test your implementation.");
         System.out.println("The provided tests are not complete. You have to write your own tests.");
 // -----------------------------> works <-----------------------------------------------------
-        // testExtract();
-        // testSlope();
-        // testAngle();
-        // testGetNeighbours();
-        // testBlackNeighbours();
-        // testTransition();
-        // testIdentical();
-        // testConnectedPixelsF();
-        // testConnectedPixels2();
-        // testConnectedPixels3();
-        // testOrientation();
-        // testApplyTranslation();
-        // testThin();
+        testExtract();
+        testSlope();
+        testAngle();
+        testGetNeighbours();
+        testBlackNeighbours();
+        testTransition();
+        testIdentical();
+        testConnectedPixelsF();
+        testConnectedPixels2();
+        testConnectedPixels3();
+        testOrientation();
+        testApplyTranslation();
+        testThin();
+        testWithSkeleton();
+
+        testDrawSkeleton("1_1"); //draw skeleton of fingerprint 1_1.png
+        testDrawSkeleton("1_2"); //draw skeleton of fingerprint 1_2.png
+        testDrawSkeleton("2_1"); //draw skeleton of fingerprint 2_1.png
+
+        testDrawMinutiae("1_1"); //draw minutiae of fingerprint 1_1.png
+        testDrawMinutiae("1_2"); //draw minutiae of fingerprint 1_2.png
+        testDrawMinutiae("2_1"); //draw minutiae of fingerprint 2_1.png
+
+
 
 // ------------------------> doesn't work <-----------------------------------------//
         // testApplyRotation();
         
         
-        // testWithSkeleton();
 
-        // testDrawSkeleton("1_1"); //draw skeleton of fingerprint 1_1.png
-        //testDrawSkeleton("1_2"); //draw skeleton of fingerprint 1_2.png
-        //testDrawSkeleton("2_1"); //draw skeleton of fingerprint 2_1.png
-
-        // testDrawMinutiae("1_1"); //draw minutiae of fingerprint 1_1.png
-        // testDrawMinutiae("1_2"); //draw minutiae of fingerprint 1_2.png
-        //testDrawMinutiae("2_1"); //draw minutiae of fingerprint 2_1.png
 
         //---------------------------
         // Test overall functionality
@@ -159,10 +164,10 @@ public class Main {
             System.out.println("error");
         }
         System.out.print("testTransition 2: ");
-        boolean[] neighbours2 = {false, true, false,
-                false, false, true,
+        boolean[] neighbours2 = {true, false, true,
+                false, false, false,
                 false, true};
-        if (Fingerprint.transitions(neighbours2) == 3) {
+        if (Fingerprint.transitions(neighbours2) == 2) {
             System.out.println(" ok ");
         } else {
             System.out.println("error");
@@ -385,30 +390,31 @@ public class Main {
      */
     public static void testApplyRotation() {
         // minutia, centerRow, centerCol, rotation)
+        System.out.println("testApplyRotation");
         int[] minutia = new int[]{1, 3, 10};
         int[] result = Fingerprint.applyRotation(minutia, 0, 0, 0);
-        System.out.println("Expected: 1,3,10");
-        System.out.print("Computed: ");
+        System.out.println("expected 1 : 1,3,10");
+        System.out.print("Computed 1 : ");
         printArray(result);
 
         result = Fingerprint.applyRotation(minutia, 10, 5, 0);
-        System.out.println("Expected: 1,3,10");
-        System.out.print("Computed: ");
+        System.out.println("Expected 2: 1,3,10");
+        System.out.print("Computed 2 : ");
         printArray(result);
 
         result = Fingerprint.applyRotation(minutia, 0, 0, 90);
-        System.out.println("Expected: -3,1,100");
-        System.out.print("Computed: ");
+        System.out.println("Expected 3 : -3,1,100");
+        System.out.print("Computed 3 : ");
         printArray(result);
 
         result = Fingerprint.applyRotation(new int[]{0, 3, 10}, 0, 0, 90);
-        System.out.println("Expected: -3,0,100");
-        System.out.print("Computed: ");
+        System.out.println("Expected 4 : -3,0,100");
+        System.out.print("Computed 4 : ");
         printArray(result);
 
         result = Fingerprint.applyRotation(new int[]{3, 0, 10}, 0, 0, 90);
-        System.out.println("Expected: 0,3,100");
-        System.out.print("Computed: ");
+        System.out.println("Expected 5 : 0,3,100");
+        System.out.print("Computed 5 : ");
         printArray(result);
     }
 
@@ -417,10 +423,9 @@ public class Main {
      * applyTranslation. You are free to modify and/or delete it.
      */
     public static void testApplyTranslation() {
-        // minutia, rowTranslation, colTranslation)
         int[] result = Fingerprint.applyTranslation(new int[]{1, 3, 10}, 0, 0);
-        System.out.println("Expected: 1,3,10");
-        System.out.print("Computed: ");
+        System.out.println("Expected 0: 1,3,10");
+        System.out.print("Computed 0: ");
         printArray(result);
 
         result = Fingerprint.applyTranslation(new int[]{1, 3, 10}, 10, 5);
