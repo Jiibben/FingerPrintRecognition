@@ -45,33 +45,38 @@ public class Main {
         // testDrawMinutiae("1_2"); //draw minutiae of fingerprint 1_2.png
         // testDrawMinutiae("2_1"); //draw minutiae of fingerprint 2_1.png
         // testApplyRotation();
+                // testMatchingMinutiae();
+
 
 
 
 // ------------------------> doesn't work <-----------------------------------------//
         
-        testMatchingMinutiae();
 
         // testExtract();
         //---------------------------
         // Test overall functionality
         //---------------------------
         // compare 1_1.png with 1_2.png: they are supposed to match
-        // testCompareFingerprints("1_1", "1_2", true);  //expected match: true
+//       testCompareFingerprints("1_4", "1_6", true);  //expected match: true
 
         //compare 1_1.png with 2_1.png: they are not supposed to match
-        // testCompareFingerprints("1_1", "2_1", false); //expected match: false
+//         testCompareFingerprints("1_1", "1_3", false); //expected match: false
 
         //compare 1_1 with all other images of the same finger
-        // testCompareAllFingerprints("1_1", 1, true);
+         testCompareAllFingerprints("1_1", 2, false);
+         testCompareAllFingerprints("2_1", 2, true);
+         testCompareAllFingerprints("3_1", 3, true);
 
         //compare 1_1 with all images of finger 2
-        //testCompareAllFingerprints("1_1", 2, false);
+//        testCompareAllFingerprints("1_1 <= 16; f++) {
+        //    testCompareAllFingerprints("1_1", f, false);
+        //}", 2, false);
 
         //compare 1_1 with all images of finger 3 to 16
-        //for (int f = 3; f <= 16; f++) {
-        //    testCompareAllFingerprints("1_1", f, false);
-        //}
+//        for (int f = 3; f <= 16; f++) {
+//            testCompareAllFingerprints("1_1", f, false);
+//        }
     }
 
     /**

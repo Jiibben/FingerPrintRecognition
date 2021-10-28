@@ -549,7 +549,6 @@ public class Fingerprint {
      * otherwise.
      */
     public static boolean match(List<int[]> minutiae1, List<int[]> minutiae2) {
-        int nMatch = 0;
     for (int m1 = 0; m1<minutiae1.size(); m1++){
         for(int m2 = 0; m2<minutiae2.size(); m2++){
             int rowTranslation = minutiae2.get(m2)[0] - minutiae1.get(m1)[0];
@@ -558,15 +557,13 @@ public class Fingerprint {
             int centerCol = minutiae1.get(m1)[1];
             int rotation = minutiae2.get(m2)[2] - minutiae1.get(m1)[2];
             for (int r = rotation-MATCH_ANGLE_OFFSET;r <= rotation+MATCH_ANGLE_OFFSET;r++ ){
-                nMatch += matchingMinutiaeCount(minutiae1, applyTransformation(minutiae2, centerRow, centerCol, rowTranslation, colTranslation, rotation), DISTANCE_THRESHOLD, ORIENTATION_THRESHOLD);
+               if (matchingMinutiaeCount(minutiae1, applyTransformation(minutiae2, centerRow, centerCol, rowTranslation, colTranslation, rotation), DISTANCE_THRESHOLD, ORIENTATION_THRESHOLD) >= FOUND_THRESHOLD){
+                   return true;
+               }
             }
         }
 
     }
-    if (nMatch >= FOUND_THRESHOLD ){
-        return true;
-    }else{
-        return false;
-    }
+    return false;
 }
 }
