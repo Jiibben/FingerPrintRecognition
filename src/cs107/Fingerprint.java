@@ -76,6 +76,9 @@ public class Fingerprint {
         // } catch (ArrayIndexOutOfBoundsException e) {
         //     return null;
         // }
+        if (row > (image.length -1) || row < 0 || col > (image[0].length -1) || col <0){
+            return null;
+        }
         return new boolean[]{getPixel(image, row - 1, col),
                 getPixel(image, row - 1, col + 1),
                 getPixel(image, row, col + 1),
