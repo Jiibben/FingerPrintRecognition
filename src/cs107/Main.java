@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+
 /**
  * This class will not be graded. You can use it to test your program.
  */
@@ -45,44 +46,57 @@ public class Main {
         // testDrawMinutiae("1_2"); //draw minutiae of fingerprint 1_2.png
         // testDrawMinutiae("2_1"); //draw minutiae of fingerprint 2_1.png
         // testApplyRotation();
-                // testMatchingMinutiae();
+        // testMatchingMinutiae();
+        // testExtract();
+        testFinger("1_6", "1_1", true);
+        // testExtractSpe();
+        // testAllPossibleFingerprints();
 
 
 
 
 // ------------------------> doesn't work <-----------------------------------------//
-        
+    
+    }
+    public static void testExtractSpe(){
+        int[] m2={194,62,74};
+        int[] m1={221,29,75};
+        int rowTranslation = m2[0] - m1[0];
+        int colTranslation = m2[1] - m1[1];
+        int centerRow = m1[0];
+        int centerCol = m1[1];
+        System.out.print(rowTranslation+ " ");
+        System.out.print(colTranslation + " ");
+        System.out.print(centerCol+ " ");
+        System.out.print(centerRow+ " ");
+        System.out.println("");
+        List<int[]> minutiae1 = Fingerprint.extract(Fingerprint.thin(Helper.readBinary("resources/fingerprints/1_6.png")));
+        List<int[]> minutiae2 = Fingerprint.extract(Fingerprint.thin(Helper.readBinary("resources/fingerprints/1_1.png")));
+        List<int[]> modifiedMinutiae2 = Fingerprint.applyTransformation(minutiae2, centerRow, centerCol, rowTranslation, colTranslation, -3);
 
-        // testExtract();
-        //---------------------------
-        // Test overall functionality
-        //---------------------------
-        // compare 1_1.png with 1_2.png: they are supposed to match
-//       testCompareFingerprints("1_4", "1_6", true);  //expected match: true
-
-        //compare 1_1.png with 2_1.png: they are not supposed to match
-//         testCompareFingerprints("1_1", "1_3", false); //expected match: false
-
-        //compare 1_1 with all other images of the same finger
-         testCompareAllFingerprints("1_1", 2, false);
-         testCompareAllFingerprints("2_1", 2, true);
-         testCompareAllFingerprints("3_1", 3, true);
-
-        //compare 1_1 with all images of finger 2
-//        testCompareAllFingerprints("1_1 <= 16; f++) {
-        //    testCompareAllFingerprints("1_1", f, false);
-        //}", 2, false);
-
-        //compare 1_1 with all images of finger 3 to 16
-//        for (int f = 3; f <= 16; f++) {
-//            testCompareAllFingerprints("1_1", f, false);
-//        }
+        System.out.println(Fingerprint.matchingMinutiaeCount(minutiae1, modifiedMinutiae2, Fingerprint.DISTANCE_THRESHOLD, Fingerprint.ORIENTATION_THRESHOLD));
     }
 
-    /**
-     * This function is here to help you test the functionalities of
-     * getNeighbours. You are free to modify and/or delete it.
-     */
+
+    public static void testAllPossibleFingerprints(){
+        boolean expectedResult = false;
+        for (int a = 1; a<=14; a++){
+            for (int b = 1; b<=14; b++){
+                for (int c= 1; c<=8; c++){
+                    for (int d = 1; d<=8; d++){
+                    if (a == b){
+                        expectedResult = true;
+                    }else{
+                        expectedResult = false;
+                    }
+                    testFinger((a + "_" + c), (b + "_" + d), expectedResult);
+                }
+                }
+            }
+        } 
+        testFinger("1_1", "1_2", true);
+        // testCompareAllFingerprints(name1, finger, expectedResult);
+    }
     public static void testMatchingMinutiae(){
         System.out.print("testMatchingMinutiae: ");
         int a = Fingerprint.matchingMinutiaeCount(Fingerprint.extract(Helper.readBinary("resources/test_outputs/skeleton_1_1_small.png")), Fingerprint.extract(Helper.readBinary("resources/test_outputs/skeleton_1_1_small.png")), Fingerprint.DISTANCE_THRESHOLD, Fingerprint.ORIENTATION_THRESHOLD);
@@ -543,6 +557,34 @@ public class Main {
         System.out.print("Compare " + name1 + " with " + name2);
         System.out.print(". Expected match: " + expectedResult);
         System.out.println(" Computed match: " + isMatch);
+    }
+    public static void testFinger(String name1, String name2, boolean expectedResult) {
+        boolean[][] image1 = Helper.readBinary("resources/fingerprints/" + name1 + ".png");
+        // Helper.show(Helper.fromBinary(image1), "Image1");
+        boolean[][] skeleton1 = Fingerprint.thin(image1);
+        //Helper.writeBinary("skeleton_" + name1 + ".png", skeleton1);
+        List<int[]> minutiae1 = Fingerprint.extract(skeleton1);
+        //printMinutiae(minutiae1);
+
+        //int[][] colorImageSkeleton1 = Helper.fromBinary(skeleton1);
+        //Helper.drawMinutia(colorImageSkeleton1, minutiae1);
+        //Helper.writeARGB("./minutiae_" + name1 + ".png", colorImageSkeleton1);
+
+        boolean[][] image2 = Helper.readBinary("resources/fingerprints/" + name2 + ".png");
+        boolean[][] skeleton2 = Fingerprint.thin(image2);
+        List<int[]> minutiae2 = Fingerprint.extract(skeleton2);
+
+        //int[][] colorImageSkeleton2 = Helper.fromBinary(skeleton2);
+        //Helper.drawMinutia(colorImageSkeleton2, minutiae2);
+        //Helper.writeARGB("./minutiae_" + name2 + ".png", colorImageSkeleton2);
+
+        boolean isMatch = Fingerprint.match(minutiae1, minutiae2);
+        if (isMatch == expectedResult){
+            System.out.println(name1 + " test with + " + name2 + " ok");
+        }else{
+            System.out.println(name1 + " test with + " + name2 + " error got : " + isMatch + " expected " + expectedResult);
+
+        }
     }
 
     /**

@@ -556,8 +556,17 @@ public class Fingerprint {
             int centerRow = minutiae1.get(m1)[0];
             int centerCol = minutiae1.get(m1)[1];
             int rotation = minutiae2.get(m2)[2] - minutiae1.get(m1)[2];
-            for (int r = rotation-MATCH_ANGLE_OFFSET;r <= rotation+MATCH_ANGLE_OFFSET;r++ ){
-               if (matchingMinutiaeCount(minutiae1, applyTransformation(minutiae2, centerRow, centerCol, rowTranslation, colTranslation, rotation), DISTANCE_THRESHOLD, ORIENTATION_THRESHOLD) >= FOUND_THRESHOLD){
+            for (int r = rotation-MATCH_ANGLE_OFFSET; r <= rotation+MATCH_ANGLE_OFFSET; r++ ){
+                if(minutiae2.get(m2)[0] == 194 && minutiae1.get(m1)[0] == 221){
+                    System.out.print(rowTranslation+ " ");
+                    System.out.print(colTranslation + " ");
+                    System.out.print(centerCol+ " ");
+                    System.out.print(centerRow+ " ");
+                    System.out.print(rotation + " ");
+                    System.out.println(r + "");
+                    System.out.println(matchingMinutiaeCount(minutiae1, applyTransformation(minutiae2, centerRow, centerCol, rowTranslation, colTranslation, r), DISTANCE_THRESHOLD, ORIENTATION_THRESHOLD));
+                }
+               if (matchingMinutiaeCount(minutiae1, applyTransformation(minutiae2, centerRow, centerCol, rowTranslation, colTranslation, r), DISTANCE_THRESHOLD, ORIENTATION_THRESHOLD) >= FOUND_THRESHOLD){
                    return true;
                }
             }
