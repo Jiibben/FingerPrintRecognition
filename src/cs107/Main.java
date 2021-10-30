@@ -23,32 +23,34 @@ public class Main {
         System.out.println("Uncomment the function calls in Main.main to test your implementation.");
         System.out.println("The provided tests are not complete. You have to write your own tests.");
 // -----------------------------> works <-----------------------------------------------------
-        // testExtract();
-        // testSlope();
-        // testAngle();
-        // testGetNeighbours();
-        // testBlackNeighbours();
-        // testTransition();
-        // testIdentical();
-        // testConnectedPixelsF();
-        // testConnectedPixels2();
-        // testConnectedPixels3();
-        // testOrientation();
-        // testApplyTranslation();
-        // testThin();
-        // testWithSkeleton();
-        // testApplyRotation();
+        testExtract();
+        testSlope();
+        testAngle();
+        testGetNeighbours();
+        testBlackNeighbours();
+        testTransition();
+        testIdentical();
+        testConnectedPixelsF();
+        testConnectedPixels2();
+        testConnectedPixels3();
+        testOrientation();
+        testApplyTranslation();
+        testThin();
+        testWithSkeleton();
+        testApplyRotation();
         // testDrawSkeleton("1_1"); //draw skeleton of fingerprint 1_1.png
         // testDrawSkeleton("1_2"); //draw skeleton of fingerprint 1_2.png
         // testDrawSkeleton("2_1"); //draw skeleton of fingerprint 2_1.png
 
         // testDrawMinutiae("1_1"); //draw minutiae of fingerprint 1_1.png
-        testDrawMinutiae("1_5"); //draw minutiae of fingerprint 1_2.png
-        testDrawMinutiae("2_1"); //draw minutiae of fingerprint 2_1.png
+        // testDrawMinutiae("1_6"); //draw minutiae of fingerprint 1_1.png
+
+        // testDrawMinutiae("1_5"); //draw minutiae of fingerprint 1_2.png
+        // testDrawMinutiae("2_1"); //draw minutiae of fingerprint 2_1.png
         // testApplyRotation();
-        // testMatchingMinutiae();
-        testFinger("1_6", "1_1", true);
-        testFinger("1_5", "2_1", false);
+        testExtract2();
+        // testFinger("1_1", "1_6", true);
+        // testFinger("1_5", "2_1", false);
         // testExtractSpecial(new int[] {14,45,23}, new int[] {6,54,23}, "1_5", "2_1", -1);
         // testExtractSpe();
         // testExtractSpe2();
@@ -117,8 +119,6 @@ public class Main {
                 }
             }
         } 
-        testFinger("1_1", "1_2", true);
-        // testCompareAllFingerprints(name1, finger, expectedResult);
     }
     public static void testMatchingMinutiae(){
         System.out.print("testMatchingMinutiae: ");
@@ -126,6 +126,17 @@ public class Main {
         if (a == 10){
             System.out.println("ok");
         }else{
+            System.out.println("error");
+        }
+    }
+
+    public static void testExtract2(){
+        System.out.print("testExtract2: ");
+        int a = Fingerprint.extract(Fingerprint.thin(Helper.readBinary("resources/fingerprints/1_2.png"))).size();
+        if (a == 56){
+            System.out.println("ok");
+        }else{
+            System.out.println(a);
             System.out.println("error");
         }
     }

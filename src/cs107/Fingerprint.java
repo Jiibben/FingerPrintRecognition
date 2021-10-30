@@ -149,14 +149,10 @@ public class Fingerprint {
      * otherwise.
      */
     public static boolean identical(boolean[][] image1, boolean[][] image2) {
-        if (image1.length != image2.length || image1[0].length != image2[0].length) {
-            return false;
-        } else {
-            for (int row = 0; row< image1.length; row++) {
-                for (int col = 0; col < image1[0].length; col++) {
-                    if (image1[row][col] != image2[row][col]) {
-                        return false;
-                    }
+        for (int row = 0; row< image1.length; row++) {
+            for (int col = 0; col < image1[0].length; col++) {
+                if (image1[row][col] != image2[row][col]) {
+                    return false;
                 }
             }
         }
@@ -576,7 +572,7 @@ public class Fingerprint {
             for (int[]m2 : minutiae2){
                 double rowDiff = m1[0] -m2[0];
                 double colDiff = m1[1] -m2[1];
-                int orientationDiff = Math.abs(m1[2] - m2[2]);
+                int orientationDiff = Math.abs(m1[2]) - Math.abs(m2[2]);
                 double euclidienDist = Math.sqrt((Math.pow(rowDiff,2) + Math.pow(colDiff,2)));
                 boolean distCheck =  euclidienDist <= maxDistance;
                 boolean orientationCheck = orientationDiff <= maxOrientation;
@@ -610,6 +606,7 @@ public class Fingerprint {
                if (matchCount >= FOUND_THRESHOLD){
                 System.out.println("["+ minutiae1.get(m1)[0] +", "+  minutiae1.get(m1)[1] + ", " +minutiae1.get(m1)[2]+ "]");
                 System.out.println("[" +minutiae2.get(m2)[0] + ", " +minutiae2.get(m2)[1] + ", "+minutiae2.get(m2)[2]+ "]");
+                System.out.println("number of match : " + matchCount);
                 System.out.println("rota : "+ r);
 
                 return true;
