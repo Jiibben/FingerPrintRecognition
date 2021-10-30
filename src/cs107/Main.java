@@ -37,19 +37,21 @@ public class Main {
         // testApplyTranslation();
         // testThin();
         // testWithSkeleton();
-
+        // testApplyRotation();
         // testDrawSkeleton("1_1"); //draw skeleton of fingerprint 1_1.png
         // testDrawSkeleton("1_2"); //draw skeleton of fingerprint 1_2.png
         // testDrawSkeleton("2_1"); //draw skeleton of fingerprint 2_1.png
 
         // testDrawMinutiae("1_1"); //draw minutiae of fingerprint 1_1.png
-        // testDrawMinutiae("1_2"); //draw minutiae of fingerprint 1_2.png
-        // testDrawMinutiae("2_1"); //draw minutiae of fingerprint 2_1.png
+        testDrawMinutiae("1_5"); //draw minutiae of fingerprint 1_2.png
+        testDrawMinutiae("2_1"); //draw minutiae of fingerprint 2_1.png
         // testApplyRotation();
         // testMatchingMinutiae();
-        // testExtract();
         testFinger("1_6", "1_1", true);
+        testFinger("1_5", "2_1", false);
+        // testExtractSpecial(new int[] {14,45,23}, new int[] {6,54,23}, "1_5", "2_1", -1);
         // testExtractSpe();
+        // testExtractSpe2();
         // testAllPossibleFingerprints();
 
 
@@ -72,11 +74,32 @@ public class Main {
         System.out.println("");
         List<int[]> minutiae1 = Fingerprint.extract(Fingerprint.thin(Helper.readBinary("resources/fingerprints/1_6.png")));
         List<int[]> minutiae2 = Fingerprint.extract(Fingerprint.thin(Helper.readBinary("resources/fingerprints/1_1.png")));
-        List<int[]> modifiedMinutiae2 = Fingerprint.applyTransformation(minutiae2, centerRow, centerCol, rowTranslation, colTranslation, -3);
+        // printMinutiae(minutiae1);
+        System.out.println("len1a"+ minutiae1.size());
+        System.out.println("len2a"+ minutiae2.size());
+
+        List<int[]> modifiedMinutiae2 = Fingerprint.applyTransformation(minutiae2, centerRow, centerCol, rowTranslation, colTranslation, 0);
 
         System.out.println(Fingerprint.matchingMinutiaeCount(minutiae1, modifiedMinutiae2, Fingerprint.DISTANCE_THRESHOLD, Fingerprint.ORIENTATION_THRESHOLD));
     }
 
+
+    public static void testExtractSpecial(int[]m1, int[]m2, String finger1name, String finger2name, int rotation){
+        int rowTranslation = m2[0] - m1[0];
+        int colTranslation = m2[1] - m1[1];
+        int centerRow = m1[0];
+        int centerCol = m1[1];
+        System.out.print(rowTranslation+ " ");
+        System.out.print(colTranslation + " ");
+        System.out.print(centerCol+ " ");
+        System.out.print(centerRow+ " ");
+        System.out.println("");
+        List<int[]> minutiae1 = Fingerprint.extract(Fingerprint.thin(Helper.readBinary("resources/fingerprints/" +finger1name+ ".png")));
+        List<int[]> minutiae2 = Fingerprint.extract(Fingerprint.thin(Helper.readBinary("resources/fingerprints/"+finger2name+".png")));
+        List<int[]> modifiedMinutiae2 = Fingerprint.applyTransformation(minutiae2, centerRow, centerCol, rowTranslation, colTranslation, rotation);
+
+        System.out.println("number of match : " +Fingerprint.matchingMinutiaeCount(minutiae1, modifiedMinutiae2, Fingerprint.DISTANCE_THRESHOLD, Fingerprint.ORIENTATION_THRESHOLD));
+    }
 
     public static void testAllPossibleFingerprints(){
         boolean expectedResult = false;
