@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-
 /**
  * Provides tools to compare fingerprint.
  */
@@ -68,7 +67,7 @@ public class Fingerprint {
      */
     public static boolean[] getNeighbours(boolean[][] image, int row, int col) {
         assert (image != null); // special case that is not expected (the image is supposed to have been checked
-        if (row > (image.length -1) || row < 0 || col > (image[0].length -1) || col <0){
+        if (row > (image.length - 1) || row < 0 || col > (image[0].length - 1) || col < 0) {
             return null;
         }
         return new boolean[]{getPixel(image, row - 1, col),
@@ -83,9 +82,10 @@ public class Fingerprint {
 
     /**
      * used by getNeighbours
+     *
      * @param image array containing each pixel's boolean value.
-     * @param row the row of the pixel
-     * @param col the rcol of the pixel
+     * @param row   the row of the pixel
+     * @param col   the rcol of the pixel
      * @return the pixel value either true or false (black or white) or false if pixel's isn't in the image
      */
     static boolean getPixel(boolean[][] image, int row, int col) {
@@ -133,7 +133,7 @@ public class Fingerprint {
             }
         }
         //check special case for transition p7 to p0
-        if ((!neighbours[neighbours.length -1]) && neighbours[0]) {
+        if ((!neighbours[neighbours.length - 1]) && neighbours[0]) {
             transitionCount++;
         }
 
@@ -149,7 +149,7 @@ public class Fingerprint {
      * otherwise.
      */
     public static boolean identical(boolean[][] image1, boolean[][] image2) {
-        for (int row = 0; row< image1.length; row++) {
+        for (int row = 0; row < image1.length; row++) {
             for (int col = 0; col < image1[0].length; col++) {
                 if (image1[row][col] != image2[row][col]) {
                     return false;
@@ -158,10 +158,12 @@ public class Fingerprint {
         }
         return true;
     }
+
     /**
      * returns a copy of the image (bidimensional table)
+     *
      * @param image nested array containg each pixel value
-     * @return the copy of the given image 
+     * @return the copy of the given image
      */
     static boolean[][] copyImage(boolean[][] image) {
         boolean[][] newImage = new boolean[image.length][image[0].length];
@@ -175,11 +177,12 @@ public class Fingerprint {
 
 
     /**
-     * Test a few criteria to determine if a pixel is necessary or not 
+     * Test a few criteria to determine if a pixel is necessary or not
+     *
      * @param image nested array containg each pixel value
-     * @param row row of the pixel of interest
-     * @param col col of the pixel of interest
-     * @param step which criteria to test (either 0 or 1 )
+     * @param row   row of the pixel of interest
+     * @param col   col of the pixel of interest
+     * @param step  which criteria to test (either 0 or 1 )
      * @return return true if pixel is not necessary, false if it's necessary
      */
     static boolean checksSteps(boolean[][] image, int row, int col, int step) {
@@ -200,11 +203,7 @@ public class Fingerprint {
 
         if (isPixelBlack && pNeighNonEm && bNeighInterval && transitionsNumber && white024 && white246 && step == 0) {
             return true;
-        } else if (isPixelBlack && pNeighNonEm && bNeighInterval && transitionsNumber && white046 && white026 && step == 1) {
-            return true;
-        } else {
-            return false;
-        }
+        } else return isPixelBlack && pNeighNonEm && bNeighInterval && transitionsNumber && white046 && white026 && step == 1;
     }
 
     /**
@@ -247,14 +246,14 @@ public class Fingerprint {
     }
 
     /**
-     * return true if pixel is in a given square portion of the image 
-     * @param image 
-     * @param row
-     * @param col
-     * @param distance
-     * @param y
-     * @param x
-     * @return
+     * return true if pixel is in a given square portion of the image
+
+     * @param row row of minutia
+     * @param col col of minutia
+     * @param distance distance from center of minutia
+     * @param y row of pixel of interest
+     * @param x col of pixel of interest
+     * @return true if pixel is inside the "square around the minutia of given distance else false
      */
     public static boolean isInsideSquare(boolean[][] image, int row, int col, int distance, int y, int x) {
         int xLowDist = (col - distance < 0) ? 0 : col - distance;
@@ -263,11 +262,7 @@ public class Fingerprint {
         int yHighDist = (row + distance > (image.length - 1)) ? (image.length - 1) : row + distance;
         if (y < yLowDist || y > yHighDist) {
             return false;
-        } else if (x < xLowDist || x > xHighDist) {
-            return false;
-        } else {
-            return true;
-        }
+        } else return x >= xLowDist && x <= xHighDist;
     }
 
     static boolean[][] createOnlyMinutieImage(boolean[][] image, int row, int col) {
@@ -313,19 +308,22 @@ public class Fingerprint {
         } while (!identical(oldMinutie, minutie));
         return minutie;
     }
-    
+
     /**
      * calculate the column of a pixel taking that the minutie is at column 0
-     * @param col column of the pixel
+     *
+     * @param col  column of the pixel
      * @param colM column of the minutia
      * @return the colum (x) of the pixel with minutia as the origin
      */
     static int calculateX(int col, int colM) {
         return col - colM;
     }
+
     /**
      * calculate the row  of a pixel taking that the minutie is at column 0
-     * @param row row of the pixel
+     *
+     * @param row  row of the pixel
      * @param rowM column of the minutia
      * @return the row (y) of the pixel with minutia as the origin
      */
@@ -365,21 +363,18 @@ public class Fingerprint {
             return sumSqrY / sumXY;
         }
     }
+
     /**
      * //controle si un pixel de coordonnée (y,x) est au dessu de la droite de pente
-
-     * @param y row of the pixe3l
-     * @param x column of the pixel
+     *
+     * @param y     row of the pixe3l
+     * @param x     column of the pixel
      * @param slope pente de la droite
      * @return true if the pixel(y,x) is in the upside of the droite de pente slope
      */
     static boolean isInTheUpside(int y, int x, double slope) {
         double newSlope = -1 / slope;
-        if (y >= (newSlope * x)) {
-            return true;
-        } else {
-            return false;
-        }
+        return y >= (newSlope * x);
     }
 
     /**
@@ -466,16 +461,17 @@ public class Fingerprint {
         for (int y = 1; y < image.length - 1; y++) {
             for (int x = 1; x < image[0].length - 1; x++) {
                 transitionsNumber = transitions(getNeighbours(image, y, x));
-                if (image[y][x]){
-                if (transitionsNumber == 1 || transitionsNumber == 3) {       
-                    int z = computeOrientation(image, y, x, ORIENTATION_DISTANCE);
-                    minuties.add(new int[]{y, x, z});
+                if (image[y][x]) {
+                    if (transitionsNumber == 1 || transitionsNumber == 3) {
+                        int z = computeOrientation(image, y, x, ORIENTATION_DISTANCE);
+                        minuties.add(new int[]{y, x, z});
+                    }
                 }
-            }
             }
         }
         return minuties;
     }
+
     /**
      * Applies the specified rotation to the minutia.
      *
@@ -491,11 +487,11 @@ public class Fingerprint {
         int y = (centerRow - minutia[0]);
         double cos = Math.cos(angleRad);
         double sin = Math.sin(angleRad);
-        double newX = (x*cos) - (y*sin);
-        double newY = (x*sin) + (y*cos);
+        double newX = (x * cos) - (y * sin);
+        double newY = (x * sin) + (y * cos);
         int newRow = (int) Math.round((centerRow - newY));
         int newCol = (int) Math.round((newX + centerCol));
-        int newOrientation = (int) Math.round((minutia[2] + rotation) % 360);
+        int newOrientation = Math.round((minutia[2] + rotation) % 360);
         return new int[]{newRow, newCol, newOrientation};
 
     }
@@ -530,8 +526,7 @@ public class Fingerprint {
 
     public static int[] applyTransformation(int[] minutia, int centerRow, int centerCol, int rowTranslation, int colTranslation, int rotation) {
         int[] rotatedMinutia = applyRotation(minutia, centerRow, centerCol, rotation);
-        int[] translatedAndRotatedMinutia = applyTranslation(rotatedMinutia, rowTranslation, colTranslation);
-        return translatedAndRotatedMinutia;
+        return applyTranslation(rotatedMinutia, rowTranslation, colTranslation);
     }
 
     /**
@@ -547,9 +542,9 @@ public class Fingerprint {
      * @return the list of transformed minutiae.
      */
     public static List<int[]> applyTransformation(List<int[]> minutiae, int centerRow, int centerCol, int rowTranslation, int colTranslation, int rotation) {
-        ArrayList<int[]> transformedMinutiae = new ArrayList<int[]>();
-        for (int minutiaeIndex = 0; minutiaeIndex<minutiae.size(); minutiaeIndex++){
-            transformedMinutiae.add(applyTransformation(minutiae.get(minutiaeIndex), centerRow, centerCol, rowTranslation, colTranslation, rotation));
+        ArrayList<int[]> transformedMinutiae = new ArrayList<>();
+        for (int[] ints : minutiae) {
+            transformedMinutiae.add(applyTransformation(ints, centerRow, centerCol, rowTranslation, colTranslation, rotation));
         }
         return transformedMinutiae;
     }
@@ -565,18 +560,17 @@ public class Fingerprint {
      *                       minutiae to consider them as overlapping.
      * @return the number of overlapping minutiae.
      */
-    public static int matchingMinutiaeCount(List<int[]> minutiae1, List<int[]> minutiae2, int maxDistance,int maxOrientation) {
+    public static int matchingMinutiaeCount(List<int[]> minutiae1, List<int[]> minutiae2, int maxDistance, int maxOrientation) {
         int matchingCount = 0;
-        // Main.printMinutiae(minutiae1);
-        for (int[] m1 : minutiae1){
-            for (int[]m2 : minutiae2){
-                double rowDiff = m1[0] -m2[0];
-                double colDiff = m1[1] -m2[1];
-                int orientationDiff = Math.abs(m1[2]) - Math.abs(m2[2]);
-                double euclidienDist = Math.sqrt((Math.pow(rowDiff,2) + Math.pow(colDiff,2)));
-                boolean distCheck =  euclidienDist <= maxDistance;
+        for (int[] m1 : minutiae1) {
+            for (int[] m2 : minutiae2) {
+                double rowDiff = m1[0] - m2[0];
+                double colDiff = m1[1] - m2[1];
+                int orientationDiff = Math.abs(m1[2] - m2[2]);
+                double euclideanDist = Math.sqrt((Math.pow(rowDiff, 2) + Math.pow(colDiff, 2)));
+                boolean distCheck = euclideanDist <= maxDistance;
                 boolean orientationCheck = orientationDiff <= maxOrientation;
-                if (distCheck && orientationCheck){
+                if (distCheck && orientationCheck) {
                     matchingCount++;
                 }
             }
@@ -593,28 +587,24 @@ public class Fingerprint {
      * otherwise.
      */
     public static boolean match(List<int[]> minutiae1, List<int[]> minutiae2) {
-    for (int m1 = 0; m1<minutiae1.size(); m1++){
-        for(int m2 = 0; m2<minutiae2.size(); m2++){
-            int rowTranslation = minutiae2.get(m2)[0] - minutiae1.get(m1)[0];
-            int colTranslation = minutiae2.get(m2)[1] - minutiae1.get(m1)[1];
-            int centerRow = minutiae1.get(m1)[0];
-            int centerCol = minutiae1.get(m1)[1];
-            int rotation = minutiae2.get(m2)[2] - minutiae1.get(m1)[2];
-            for (int r = rotation-MATCH_ANGLE_OFFSET; r <= rotation+MATCH_ANGLE_OFFSET; r++ ){
-                List<int[]> transformedMinutiae = applyTransformation(minutiae2, centerRow, centerCol, rowTranslation, colTranslation, r);
-                int matchCount = matchingMinutiaeCount(minutiae1, transformedMinutiae, DISTANCE_THRESHOLD, ORIENTATION_THRESHOLD);
-               if (matchCount >= FOUND_THRESHOLD){
-                System.out.println("["+ minutiae1.get(m1)[0] +", "+  minutiae1.get(m1)[1] + ", " +minutiae1.get(m1)[2]+ "]");
-                System.out.println("[" +minutiae2.get(m2)[0] + ", " +minutiae2.get(m2)[1] + ", "+minutiae2.get(m2)[2]+ "]");
-                System.out.println("number of match : " + matchCount);
-                System.out.println("rota : "+ r);
+        for (int m1 = 0; m1 < minutiae1.size(); m1++) {
+            for (int m2 = 0; m2 < minutiae2.size(); m2++) {
+                int rowTranslation = minutiae2.get(m2)[0] - minutiae1.get(m1)[0];
+                int colTranslation = minutiae2.get(m2)[1] - minutiae1.get(m1)[1];
+                int centerRow = minutiae1.get(m1)[0];
+                int centerCol = minutiae1.get(m1)[1];
+                int rotation = minutiae2.get(m2)[2] - minutiae1.get(m1)[2];
+                for (int r = rotation - MATCH_ANGLE_OFFSET; r <= rotation + MATCH_ANGLE_OFFSET; r++) {
+                    List<int[]> transformedMinutiae = applyTransformation(minutiae2, centerRow, centerCol, rowTranslation, colTranslation, r);
+                    int matchCount = matchingMinutiaeCount(minutiae1, transformedMinutiae, DISTANCE_THRESHOLD, ORIENTATION_THRESHOLD);
+                    if (matchCount >= FOUND_THRESHOLD) {
 
-                return true;
-               }
+                        return true;
+                    }
+                }
             }
-        }
 
+        }
+        return false;
     }
-    return false;
-}
 }
