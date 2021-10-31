@@ -49,12 +49,12 @@ public class Main {
 //         testDrawMinutiae("2_1"); //draw minutiae of fingerprint 2_1.png
 //         testApplyRotation();
 //       testExtract2();
-//        // testFinger("1_1", "1_6", true);
+       testFinger("1_1", "1_6", true);
 //         testFinger("2_1", "2_1", true);
 //         testAllPossibleFingerprints();
-//        for (int f = 3; f <= 16; f++) {
-//                testCompareAllFingerprints("1_1", f, false);
-//             }
+       for (int f = 3; f <= 16; f++) {
+               testCompareAllFingerprints("1_1", f, false);
+            }
 
 
 

@@ -191,8 +191,7 @@ public class Fingerprint {
         int bNeighPixel = blackNeighbours(neighPixel);
 
         //checks
-        boolean isPixelBlack = (pixel);
-        boolean pNeighNonEm = neighPixel != null;
+        boolean pNeighNonNull = neighPixel != null;
         boolean bNeighInterval = ((bNeighPixel <= 6) && (bNeighPixel >= 2));
         boolean transitionsNumber = (transitions(neighPixel) == 1);
         boolean white024 = (!(neighPixel[0] && neighPixel[2] && neighPixel[4]));
@@ -201,9 +200,9 @@ public class Fingerprint {
         boolean white026 = (!(neighPixel[0] && neighPixel[2] && neighPixel[6]));
         boolean white046 = (!(neighPixel[0] && neighPixel[4] && neighPixel[6]));
 
-        if (isPixelBlack && pNeighNonEm && bNeighInterval && transitionsNumber && white024 && white246 && step == 0) {
+        if (pixel && pNeighNonNull && bNeighInterval && transitionsNumber && white024 && white246 && step == 0) {
             return true;
-        } else return isPixelBlack && pNeighNonEm && bNeighInterval && transitionsNumber && white046 && white026 && step == 1;
+        } else return pixel && pNeighNonNull && bNeighInterval && transitionsNumber && white046 && white026 && step == 1;
     }
 
     /**
@@ -256,10 +255,10 @@ public class Fingerprint {
      * @return true if pixel is inside the "square around the minutia of given distance else false
      */
     public static boolean isInsideSquare(boolean[][] image, int row, int col, int distance, int y, int x) {
-        int xLowDist = (col - distance < 0) ? 0 : col - distance;
-        int xHighDist = (col + distance > (image[0].length - 1)) ? (image[0].length - 1) : col + distance;
-        int yLowDist = (row - distance < 0) ? 0 : row - distance;
-        int yHighDist = (row + distance > (image.length - 1)) ? (image.length - 1) : row + distance;
+        int xLowDist = Math.max(col - distance, 0);
+        int xHighDist = Math.min(col + distance, (image[0].length - 1));
+        int yLowDist = Math.max(row - distance, 0);
+        int yHighDist = Math.min(row + distance, (image.length - 1));
         if (y < yLowDist || y > yHighDist) {
             return false;
         } else return x >= xLowDist && x <= xHighDist;
@@ -455,7 +454,7 @@ public class Fingerprint {
      * @see #thin(boolean[][])
      */
     public static List<int[]> extract(boolean[][] image) {
-        ArrayList<int[]> minuties = new ArrayList<int[]>();
+        ArrayList<int[]> minuties = new ArrayList<>();
 
         int transitionsNumber;
         for (int y = 1; y < image.length - 1; y++) {
