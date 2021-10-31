@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-
 /**
  * This class will not be graded. You can use it to test your program.
  */
@@ -23,6 +22,7 @@ public class Main {
         System.out.println("Uncomment the function calls in Main.main to test your implementation.");
         System.out.println("The provided tests are not complete. You have to write your own tests.");
 // -----------------------------> works <-----------------------------------------------------
+//        testExtractSpe();
 //        testExtract();
 //        testSlope();
 //        testAngle();
@@ -48,37 +48,33 @@ public class Main {
 //         testDrawMinutiae("1_5"); //draw minutiae of fingerprint 1_2.png
 //         testDrawMinutiae("2_1"); //draw minutiae of fingerprint 2_1.png
 //         testApplyRotation();
-//       testExtract2();
-       testFinger("1_1", "1_6", true);
+//      testExtract2();
+//        testFinger("1_1", "1_6", true);
 //         testFinger("2_1", "2_1", true);
 //         testAllPossibleFingerprints();
-       for (int f = 3; f <= 16; f++) {
-               testCompareAllFingerprints("1_1", f, false);
-            }
-
-
-
-
-// ------------------------> doesn't work <-----------------------------------------//
-    
+//        for (int f = 3; f <= 16; f++) {
+//            testCompareAllFingerprints("1_1", f, false);
+//        }
+//
     }
-    public static void testExtractSpe(){
-        int[] m2={194,62,74};
-        int[] m1={221,29,75};
+
+    public static void testExtractSpe() {
+        int[] m2 = {194, 62, 74};
+        int[] m1 = {221, 29, 75};
         int rowTranslation = m2[0] - m1[0];
         int colTranslation = m2[1] - m1[1];
         int centerRow = m1[0];
         int centerCol = m1[1];
-        System.out.print(rowTranslation+ " ");
+        System.out.print(rowTranslation + " ");
         System.out.print(colTranslation + " ");
-        System.out.print(centerCol+ " ");
-        System.out.print(centerRow+ " ");
+        System.out.print(centerCol + " ");
+        System.out.print(centerRow + " ");
         System.out.println("");
         List<int[]> minutiae1 = Fingerprint.extract(Fingerprint.thin(Helper.readBinary("resources/fingerprints/1_6.png")));
         List<int[]> minutiae2 = Fingerprint.extract(Fingerprint.thin(Helper.readBinary("resources/fingerprints/1_1.png")));
         // printMinutiae(minutiae1);
-        System.out.println("len1a"+ minutiae1.size());
-        System.out.println("len2a"+ minutiae2.size());
+        System.out.println("len1a" + minutiae1.size());
+        System.out.println("len2a" + minutiae2.size());
 
         List<int[]> modifiedMinutiae2 = Fingerprint.applyTransformation(minutiae2, centerRow, centerCol, rowTranslation, colTranslation, 0);
 
@@ -86,56 +82,57 @@ public class Main {
     }
 
 
-    public static void testExtractSpecial(int[]m1, int[]m2, String finger1name, String finger2name, int rotation){
+    public static void testExtractSpecial(int[] m1, int[] m2, String finger1name, String finger2name, int rotation) {
         int rowTranslation = m2[0] - m1[0];
         int colTranslation = m2[1] - m1[1];
         int centerRow = m1[0];
         int centerCol = m1[1];
-        System.out.print(rowTranslation+ " ");
+        System.out.print(rowTranslation + " ");
         System.out.print(colTranslation + " ");
-        System.out.print(centerCol+ " ");
-        System.out.print(centerRow+ " ");
+        System.out.print(centerCol + " ");
+        System.out.print(centerRow + " ");
         System.out.println("");
-        List<int[]> minutiae1 = Fingerprint.extract(Fingerprint.thin(Helper.readBinary("resources/fingerprints/" +finger1name+ ".png")));
-        List<int[]> minutiae2 = Fingerprint.extract(Fingerprint.thin(Helper.readBinary("resources/fingerprints/"+finger2name+".png")));
+        List<int[]> minutiae1 = Fingerprint.extract(Fingerprint.thin(Helper.readBinary("resources/fingerprints/" + finger1name + ".png")));
+        List<int[]> minutiae2 = Fingerprint.extract(Fingerprint.thin(Helper.readBinary("resources/fingerprints/" + finger2name + ".png")));
         List<int[]> modifiedMinutiae2 = Fingerprint.applyTransformation(minutiae2, centerRow, centerCol, rowTranslation, colTranslation, rotation);
 
-        System.out.println("number of match : " +Fingerprint.matchingMinutiaeCount(minutiae1, modifiedMinutiae2, Fingerprint.DISTANCE_THRESHOLD, Fingerprint.ORIENTATION_THRESHOLD));
+        System.out.println("number of match : " + Fingerprint.matchingMinutiaeCount(minutiae1, modifiedMinutiae2, Fingerprint.DISTANCE_THRESHOLD, Fingerprint.ORIENTATION_THRESHOLD));
     }
 
-    public static void testAllPossibleFingerprints(){
+    public static void testAllPossibleFingerprints() {
         boolean expectedResult = false;
-        for (int a = 1; a<=14; a++){
-            for (int b = 1; b<=14; b++){
-                for (int c= 1; c<=8; c++){
-                    for (int d = 1; d<=8; d++){
-                    if (a == b){
-                        expectedResult = true;
-                    }else{
-                        expectedResult = false;
+        for (int a = 1; a <= 16; a++) {
+            for (int b = 1; b <= 16; b++) {
+                for (int c = 1; c <= 8; c++) {
+                    for (int d = 1; d <= 8; d++) {
+                        if (a == b) {
+                            expectedResult = true;
+                        } else {
+                            expectedResult = false;
+                        }
+                        testFinger((a + "_" + c), (b + "_" + d), expectedResult);
                     }
-                    testFinger((a + "_" + c), (b + "_" + d), expectedResult);
-                }
                 }
             }
-        } 
+        }
     }
-    public static void testMatchingMinutiae(){
+
+    public static void testMatchingMinutiae() {
         System.out.print("testMatchingMinutiae: ");
         int a = Fingerprint.matchingMinutiaeCount(Fingerprint.extract(Helper.readBinary("resources/test_outputs/skeleton_1_1_small.png")), Fingerprint.extract(Helper.readBinary("resources/test_outputs/skeleton_1_1_small.png")), Fingerprint.DISTANCE_THRESHOLD, Fingerprint.ORIENTATION_THRESHOLD);
-        if (a == 10){
+        if (a == 10) {
             System.out.println("ok");
-        }else{
+        } else {
             System.out.println("error");
         }
     }
 
-    public static void testExtract2(){
+    public static void testExtract2() {
         System.out.print("testExtract2: ");
         int a = Fingerprint.extract(Fingerprint.thin(Helper.readBinary("resources/fingerprints/1_2.png"))).size();
-        if (a == 56){
+        if (a == 56) {
             System.out.println("ok");
-        }else{
+        } else {
             System.out.println(a);
             System.out.println("error");
         }
@@ -592,6 +589,7 @@ public class Main {
         System.out.print(". Expected match: " + expectedResult);
         System.out.println(" Computed match: " + isMatch);
     }
+
     public static void testFinger(String name1, String name2, boolean expectedResult) {
         boolean[][] image1 = Helper.readBinary("resources/fingerprints/" + name1 + ".png");
         // Helper.show(Helper.fromBinary(image1), "Image1");
@@ -613,9 +611,9 @@ public class Main {
         //Helper.writeARGB("./minutiae_" + name2 + ".png", colorImageSkeleton2);
 
         boolean isMatch = Fingerprint.match(minutiae1, minutiae2);
-        if (isMatch == expectedResult){
+        if (isMatch == expectedResult) {
             System.out.println(name1 + " test with + " + name2 + " ok");
-        }else{
+        } else {
             System.out.println(name1 + " test with + " + name2 + " error got : " + isMatch + " expected " + expectedResult);
 
         }

@@ -202,7 +202,8 @@ public class Fingerprint {
 
         if (pixel && pNeighNonNull && bNeighInterval && transitionsNumber && white024 && white246 && step == 0) {
             return true;
-        } else return pixel && pNeighNonNull && bNeighInterval && transitionsNumber && white046 && white026 && step == 1;
+        } else
+            return pixel && pNeighNonNull && bNeighInterval && transitionsNumber && white046 && white026 && step == 1;
     }
 
     /**
@@ -246,12 +247,12 @@ public class Fingerprint {
 
     /**
      * return true if pixel is in a given square portion of the image
-
-     * @param row row of minutia
-     * @param col col of minutia
+     *
+     * @param row      row of minutia
+     * @param col      col of minutia
      * @param distance distance from center of minutia
-     * @param y row of pixel of interest
-     * @param x col of pixel of interest
+     * @param y        row of pixel of interest
+     * @param x        col of pixel of interest
      * @return true if pixel is inside the "square around the minutia of given distance else false
      */
     public static boolean isInsideSquare(boolean[][] image, int row, int col, int distance, int y, int x) {
